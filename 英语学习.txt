@@ -1,0 +1,21 @@
+服务器ip：server.yz-online.com   120.195.197.18
+preferences	爱好
+appearance	外观
+alert  警告
+onblur  失去焦点
+Disposition 部署
+attachment	附件
+populate	填充
+escape	避开
+BLOB	二进制
+dialect		方言
+isolation   隔离
+persistent	持久化
+constraint  约束
+preferences	爱好
+appearance	外观
+alert  警告
+onblur  失去焦点
+compatible 兼容的
+ResourceBundle 资源包
+
