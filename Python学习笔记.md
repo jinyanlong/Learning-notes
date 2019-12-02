@@ -6,6 +6,8 @@
 		分组取名：(?P<name>)
 		使用分组名：(?P=name)
 	\1 取第一个分组中的值
+	o{n}--匹配n个o；
+	[amk]--匹配amk当中的一个
 	
 ##2，网络
 	集线器：包是通过广播的形式传播。不能连很多。
@@ -16,6 +18,11 @@
 	\t,\r,\n都是空白字符，
 	str.isspace()判断是否为空白字符
 	str.index("hello")-如果不存在会报错
+	
+##3，缩进
+	python中缩进表示代码的归属关系
+	前面的空格越少，表示代码的级别越高。
+	前面的空格越多，表示代码的级别越低。
 	
 ##4，for循环
 	for --:
@@ -38,6 +45,8 @@
 		gl_nums = (1, 2, 3)
 		gl_dict = {"name": "小明", "age": 18}
 		func(*gl_nums, **gl_dict) 拆包语法，简化元组变量/字典变量的传递
+##7，字符串
+	r“hello\n"   --r 表示不用转义hello\n
 
 ##7，列表[]
 	[]+=[]  --相当于[].extend([])
@@ -46,8 +55,17 @@
 	遍历：for n in (1,2,3):
 
 ##9，字典{}
+	判断某个key是否存在在dic中，用 "xxx" in {}
+	
+	QueryDict:q1=QueryDict('a=1&b=2&a=3');
+		与Dict的区别是key可以重复。
+		取值：q1['d']-会抛异常。q1.get('d') --返回null  .q1.getlist('a');
+
 
 ##10,面向对象：
+	类也是对象：通过globals()可以看到所有的对象。
+		以字典类型返回当前位置的全部全局变量。
+		__builtins__:系统的全局变量。
 	对象属性：
 		tom=Cat();
 		tom.name="Tom"   --创建对象属性
@@ -87,6 +105,13 @@
 		Dog(Animal);
 		重名：子类会重写父类的方法；
 		如果需要父类的方法，则用super().func(self)调用
+		
+	help(test)  查看类
+	__dict__属性：静态函数、类函数、普通函数、全局变量以
+		及一些内置的属性都是放在类__dict__
+		
+	获取创建对象的类，test.__class__,
+	源类：创建类的类，type
 	
 ##11，异常：
 	try:
@@ -100,6 +125,7 @@
 		raise ex
 
 ##11，模块化：
+	安装模块： pip3 install 包名
 	导入包的顺序：sys.path,依次查找
 	导入包： 导入文件夹
 	导入模块：
@@ -107,6 +133,13 @@
 	"""reload()方法能重新导入模块"""
 	from imp import reload
 	reload(模块名)
+	
+##12，包|python虚拟环境
+	pip3 install 包名   ---默认安装在/usr/local/lib/python3.5/下面
+	创建python虚拟环境
+	
+	进入虚拟环境：workon 名
+	退出虚拟环境：deactivate
 	
 ##12，系统函数
 	eval() 函数用来执行一个字符串表达式，并返回表达式的值。
@@ -132,7 +165,162 @@
 	queue=multiprocessing.Queue() --进程间通过队列共享数据，传参过去。
 	进程池：
 
+##14，闭包
+	
+##15，装饰器。
+	实质是为每个装饰器申请了一个函数空间。
+	当文件被载入的时候装饰器执行。
+	@set_func(1)
+	def func():  --首先调用res=set_func,然后用res当做装饰器
+	所以必须要三层函数嵌套当做装饰器
+	
+##16，元类：	
+	创建类的类叫元类：
+	用法：比如想把类的某个字段变为大写的名字
+	type(1000)
+	type("Test",(Parent),{name:"zhangsan"})  --type也可以创建类
+	用自定义的源类创建类；class Test(object,metaclasss=upper_attr)
+	
+##17，mysql。
+	source test.sql   运行sql语句的文件
+	python中默认开始事务。
+	导入数据库：from pymysql import *
+	连接数据库：conn=connect（）
+	获取游标：cs1=conn.cursor()  --用于执行sql语句
+	执行：cs1.execute("")
 
+##18，虚拟环境
+	pip install virtualenv  --安装虚拟环境
+	pip install virtualenvwrapper  --对虚拟环境的封装版本
+	mkvirtualenv -p python3 环境名  ---创建虚拟环境（linux）
+	(virtualenv envname --windows)
+	(activate  # 启动虚拟环境
+	deactivate # 退出虚拟环境)
+	workon 环境名  ---进入虚拟环境：
+	deactivate  退出   --
+	rmvirtualenv+环境名 --删除
+	pip install+包名   --pip命令操作python包。
+	pip list  查看当前环境已经安装的包
+	pip freeze > yizhi.txt  //环境的移植
+	pip install -r yizhi.txt
+	
+	
+##19, django
+	python manage.py makemigrations  生成迁移文件
+	python manage.py migrate  生成表
+	python manage.py shell   进入项目终端
+	
+	python manage.py createsuperuser  --创建项目管理员
+	
+	捕获url参数：
+		1，位置参数：/index11.利用urlpatterns=[url(r'^showarg(\d+)$', views.show]第二个参数传参到show
+		2，关键字参数 url(r'^showarg(?P<num>\d+)$',show)show中参数必须为num
+		
+
+##19, django模板	
+	使用模板变量：{{book.btile}}  ---只能使用(.)。	
+	book.btile的解析过程，首先把book当成一个字典，然后把book当成对象，btile当成属性，再然后把book当成对象，btitle当成对象的方法进行取值。
+	模板标签：
+		{% 代码段 %}
+		for循环：{% for x in list %} ... {% endfor %}
+	逻辑运算： >;>=  逻辑运算符两端必须有空格。
+	过滤器：模板变量|过滤器：参数     --例如时间格式化
+	自定义过滤器；默认模板变量为第一个参数，如果需要两个，:后面再加一个参数；
+		最少一个参数，最多两个参数。
+		
+	模板注释:{# #},{% comment %}  {% endcomment %}
+	
+	中间件：
+	
+	
+##19, 错误码
+	404：页面没找到。
+	500：视图代码有问题
+	
+##20, Flask
+	mysql：
+		relationship:关系。用法：role{users=db.relationship("User",backref="role")}
+		backref="role"  --相当于给User添加role属性。User.role.
+	使用flask_migrate迁移数据库
+		python author_book.py db init   --创建文件夹
+		python author_book.py db migrate -m "注释" --生成迁移文件
+		python author_book.py db upgrade --升级数据库
+		python author_book.py db history --查看数据库所有的历史版本
+		python author_book.py db downgrade ee602d992e79  --回退版本
+		
+	工程，应用
+	flask中蓝图对应应用
+	
+	import不能相互嵌套导入。--解决方法：一方放到函数里面执行导入。
+	
+	使用蓝图blueprint;
+	传参(__name__)是用于确定项目目录。查找文件。
+	
+	测试单元：import unittest
+		测试函数以test_开头
+	
+##21，vim
+	w-向后移动一个单词
+	b-向前移动一个单词
+	0-行首
+	^-行首，不是空白字符
+	$-行尾
+	
+	gg-文件顶部
+	G-文件末尾
+	数字+G/gg --移动到对应的行数
+	
+	ctrl+b 向上翻页
+	ctrl+f-向下翻页
+	
+	{-上一段落
+	}-下一段落
+	%-定位到(),[],{}
+	
+	m+标记
+	'+标记  --回到标记
+	
+	v-可视模式
+	V-可视行模式
+	ctrl+v 可视块模式-竖直模式
+	
+	u -撤销上次的命令
+	ctrl+r 回复撤销
+	d+移动命令-删除移动命令对应的内容
+	x-删除选中的命令
+	
+	y+移动命令 --复制
+	yy-复制一行
+	p-粘贴
+	
+	r-替换
+	R-进入替换模式
+	>>||<<-缩进
+	.-重复上次动作
+	
+	%s/旧的/新的/g  --全局替换
+	%s/旧的/新的/gc  --确认替换
+	s/旧的/新的/g  --可视替换
+	
+	i-当前字符前插入。
+	I-行首插入
+	a-当前字符后插入
+	A-在行末插入
+	o-在当前行的下面插入一行
+	O-在当前行的上面插入一行
+	
+	先按10，然后i进入，编辑，esc退出，编辑的内容重复10次
+	多行注释：
+		ctrl+v->I># ->esc
+	
+	:e hello.py --编辑别的文件
+	:e .  --查看别的文件
+	：n  --新建文件
+	
+	sp+文件名 ---分屏
+	vsp+文件名--竖向分屏
+	ctrl+w --下一个串口
+	
 ##试题：
 	交换两个值：a, b = b, a  --提示：等号右边是一个元组，只是把小括号省略了
 	

@@ -88,6 +88,15 @@
 	蜂鸣器: gpio1_17=32+17=49
 	注意：在export 49以后那个蜂鸣器的demo才可以用
 	led:gpio3_17=113
+	
+	（./busybox devmem 0x44e109a0）读取内存中的值
+	在Techical Reference Manual.pdf的第二章Memory Map中有Control Module 寄存器的地址0x44E1_0000-0x44E1_1FFF
+	控制寄存器：
+		conf寄存器的第6位是slewctrl，选择快或慢的slew rate；
+		conf寄存器的第5位是rxactive，为0是disabled，为1是enabled；
+		conf寄存器的第4位是putypesel，选择上拉或者下拉，为0是pulldown，为1是pullup；
+		conf寄存器的第3位是puden，使能上拉或者下拉，为0是enables，为1是disabled；
+		conf寄存器的第2-0位是mmode，引脚的功能模式选择。
 
 ####4，wifi，bt调试
 	./wifi.sh
@@ -101,6 +110,7 @@
 
 ####6，sd卡升级
 	sd卡文件系统中，在rootfs-sd.tar.gz下的/etc/sfdisk_emmc.sh脚本是用于给emmc做分区的脚本，/etc/emmc_program.sh是执行emmc烧写的脚本
+	启动的服务在/lib/systemd/system/emmc_program.service中；
 	
 ####7，uboot中显示图片
 	uboot中显示图片将MLO和u-boot.img更新后，uboot下需要显示的logo也需要拷贝到/run/media/mmcblk1p1/目录下，并重命名为splash.bmp
@@ -110,7 +120,7 @@
 
 ####9，开机启动|自启动脚本制作
 	ln -s /etc/init.d/jyl.sh /etc/rc2.d/S17jyl
-	ln -s /etc/init.d/start-collecion-jyl.sh  /etc/rc2.d/S17start-collecion-jyl
+	ln -sf /etc/init.d/start-collecion-jyl.sh  /etc/rc2.d/S17start-collecion-jyl
 	
 ####10, ec20ppp拨号网址：
 	https://blog.csdn.net/u013162035/article/details/81840893
@@ -162,17 +172,24 @@
 	
 ####18,创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
 	
+####19，万象奥科地址
+	收件地址：
+	武汉东湖新技术开发区大学园路长城园路8号海容基孵化园B栋5楼503-2室
+	戴静思 185 7171 0831
+
+####20,低功耗
+	echo mem > /sys/power/state
 
 
 
 
 
+3gReset-B44-gpio3_17=gpio113--ox99c
+3gPower-B46-gpio3_18=gpio114--0x9a0
+引脚冲突
+beep  gpio1_14=gpio46--0x838
 
-
-
-
-
-
+./busybox devmem 0x44e109a0
 
 
 
