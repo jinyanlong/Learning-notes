@@ -89,7 +89,7 @@
 	注意：在export 49以后那个蜂鸣器的demo才可以用
 	led:gpio3_17=113
 	
-	（./busybox devmem 0x44e109a0）读取内存中的值
+	（./busybox devmem 0x44e109a0）读取内存中的值--读取控制寄存器中的值，看gpio口配置的什么模式
 	在Techical Reference Manual.pdf的第二章Memory Map中有Control Module 寄存器的地址0x44E1_0000-0x44E1_1FFF
 	控制寄存器：
 		conf寄存器的第6位是slewctrl，选择快或慢的slew rate；
@@ -128,6 +128,8 @@
 ####10, 创建sd卡命令：sudo ./build_sdcard.sh --device /dev/sdd
 
 ####10, 应用服务程序启动在lib/systemd/system/qt_demo.service文件中
+	在这里调用：
+		一般用户启动脚本放在/etc/systemd/system/multi-user.target.wants
 
 ####11, 开启usb网络用 modprobe g_ether
 
@@ -179,10 +181,123 @@
 
 ####20,低功耗
 	echo mem > /sys/power/state
+	
+####21，linux所有的用户在/etc/passwd 文件中
 
+####22，移植ftp
+	1，编译：arm-linux-readelf –d vsftpd  查看vsftpd文件的依赖库
+	1， 将vsftpd文件拷贝到/usr/sbin目录下。
+	2,  将vsftpd.conf文件拷贝到/etc目录下。
+		并添加：
+			#add by jyl 允许匿名用户
+			local_enable=YES
+			anonymous_enable=NO
+			local_enable=YES
+			write_enable=YES
+			local_umask=777
+			anon_upload_enable=YES
+			anon_mkdir_write_enable=YES
+			dirmessage_enable=YES
+			xferlog_enable=YES
+			connect_from_port_20=YES
+			listen_port=21
+			pam_service_name=vsftpd
+			ftp_username=ftp
+			anon_root=/ftp
+			allow_writeable_chroot=YES
+		注意：配置文件中不能有空行。不能有空格。	
+	3，执行：
+		mkdir -p /var/run/vsftpd/empty
+	4， vsftpd &	
+	6，添加用户：
+		useradd -d 主目录 用户名
+		passwd 用户名 //设置用户密码
+		chown -R 用户名 目录    --貌似要执行这个并且不要在telnet中执行，要在串口中执行
+	7，windows命令行登录：
+		ftp 192.168.1.225
+	8，用win的cmd终端会有多的错误提示信息。	
+	
 
+####22，dhcp服务	
+	目前只有eth0的dhcp起作用，eth1的udhcp失败。
+	--使用--
+		ifconfig eth0 192.168.10.1 up
+		udhcpd /etc/udhcpd_eth0.conf
+		ifconfig eth1 192.168.20.1 up
+		udhcpd /etc/udhcpd_eth1.conf
+	--测试--
+		1 echo 1 >/proc/sys/net/ipv4/ip_forward
+		2 ifconfig eth1 192.168.40.1 up
+		3 udhcpd /etc/udhcpd_eth1.conf
+		4 iptables -t nat -A POSTROUtiNG -o eth0 -j MASQUERADE
 
+		start-stop-daemon -S -x /usr/sbin/udhcpd -- /etc/udhcpd_eth1.conf -S
 
+		udhcpd /etc/udhcpd_eth1.conf & 
+		
+	git设置仓库地址：
+		git remote add  origin ssh://jyl@git.yz-online.com:10082/yuanzhi/linux/vanxoak/filesystem_yz_v1.git
+
+		
+####23，systemd学习
+	网络文档：http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+	
+	$ sudo systemctl enable clamd@scan.service
+	# 等同于
+	$ sudo ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+	
+	键值对的等号两侧不能有空格。
+	[Unit]]
+		Description：简短描述
+		Documentation：文档地址
+		Requires：当前 Unit 依赖的其他 Unit，如果它们没有运行，当前 Unit 会启动失败
+		Wants：与当前 Unit 配合的其他 Unit，如果它们没有运行，当前 Unit 不会启动失败
+		BindsTo：与Requires类似，它指定的 Unit 如果退出，会导致当前 Unit 停止运行
+		Before：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之后启动
+		After：如果该字段指定的 Unit 也要启动，那么必须在当前 Unit 之前启动
+		Conflicts：这里指定的 Unit 不能与当前 Unit 同时运行
+		Condition...：当前 Unit 运行必须满足的条件，否则不会运行
+		Assert...：当前 Unit 运行必须满足的条件，否则会报启动失败
+	[Install]通常是配置文件的最后一个区块，用来定义如何启动，以及是否开机启动。它的主要字段如下。
+		WantedBy：它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入/etc/systemd/system目录下面以 Target 名 + .wants后缀构成的子目录中
+		RequiredBy：它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中
+		Alias：当前 Unit 可用于启动的别名
+		Also：当前 Unit 激活（enable）时，会被同时激活的其他 Unit
+	[Service]区块用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段如下。
+		Type：定义启动时的进程行为。它有以下几种值。
+		Type=simple：默认值，执行ExecStart指定的命令，启动主进程
+		Type=forking：以 fork 方式从父进程创建子进程，创建后父进程会立即退出
+		Type=oneshot：一次性进程，Systemd 会等当前服务退出，再继续往下执行
+		Type=dbus：当前服务通过D-Bus启动
+		Type=notify：当前服务启动完毕，会通知Systemd，再继续往下执行
+		Type=idle：若有其他任务执行完毕，当前服务才会运行
+		ExecStart：启动当前服务的命令
+		ExecStartPre：启动当前服务之前执行的命令
+		ExecStartPost：启动当前服务之后执行的命令
+		ExecReload：重启当前服务时执行的命令
+		ExecStop：停止当前服务时执行的命令
+		ExecStopPost：停止当其服务之后执行的命令
+		RestartSec：自动重启当前服务间隔的秒数
+		Restart：定义何种情况 Systemd 会自动重启当前服务，可能的值包括always（总是重启）、on-success、on-failure、on-abnormal、on-abort、on-watchdog
+		TimeoutSec：定义 Systemd 停止当前服务之前等待的秒数
+		Environment：指定环境变量
+	系统默认启动的target（组）
+		systemctl get-default
+	查看 multi-user.target 包含的所有服务
+		systemctl list-dependencies multi-user.target
+	开机启动：
+		以httpd.service为例
+		在/usr/lib/systemd/system目录添加配置文件。
+		sudo systemctl enable httpd
+		手动启动：sudo systemctl start httpd
+		查看服务的状态：systemctl status httpd
+			Loaded行：配置文件的位置，是否设为开机启动
+			Active行：表示正在运行
+			Main PID行：主进程ID
+			Status行：由应用本身（这里是 httpd ）提供的软件当前状态
+			CGroup块：应用的所有子进程
+			日志块：应用的日志
+	
 
 3gReset-B44-gpio3_17=gpio113--ox99c
 3gPower-B46-gpio3_18=gpio114--0x9a0
@@ -191,12 +306,7 @@ beep  gpio1_14=gpio46--0x838
 
 ./busybox devmem 0x44e109a0
 
-
-
-
-
-
-
+systemctl list-unit-files
 
 
 

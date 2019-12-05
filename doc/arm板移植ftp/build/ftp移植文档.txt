@@ -1,0 +1,35 @@
+1，编译：arm-linux-readelf –d vsftpd  查看vsftpd文件的依赖库
+1， 将vsftpd文件拷贝到/usr/sbin目录下。
+2,  将vsftpd.conf文件拷贝到/etc目录下。
+	并添加：
+		#add by jyl 允许匿名用户
+		local_enable=YES
+		anonymous_enable=NO
+		local_enable=YES
+		write_enable=YES
+		local_umask=777
+		anon_upload_enable=YES
+		anon_mkdir_write_enable=YES
+		dirmessage_enable=YES
+		xferlog_enable=YES
+		connect_from_port_20=YES
+		listen_port=21
+		pam_service_name=vsftpd
+		ftp_username=ftp
+		anon_root=/ftp
+		allow_writeable_chroot=YES
+	注意：配置文件中不能有空行。不能有空格。	
+3，执行：
+	mkdir -p /var/run/vsftpd/empty
+	chmod a-w /home/ftp
+4， vsftpd &	
+6，添加用户：
+	useradd -d 主目录 用户名
+	passwd 用户名 //设置用户密码
+	chown -R 用户名 目录    --貌似要执行这个并且不要在telnet中执行，要在串口中执行
+7，windows命令行登录：
+	ftp 192.168.1.225
+
+
+
+

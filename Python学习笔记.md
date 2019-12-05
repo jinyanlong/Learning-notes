@@ -258,7 +258,11 @@
 	
 	测试单元：import unittest
 		测试函数以test_开头
-	
+		
+	部署：
+		业务服务器：gunicorn -w 4 -b 127.0.0.1:5000 -D --access-logfile ./logs/log main:app
+		4-4个进程。
+		-D  --后台运行
 ##21，vim
 	w-向后移动一个单词
 	b-向前移动一个单词
