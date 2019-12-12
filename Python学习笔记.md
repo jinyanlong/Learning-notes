@@ -336,7 +336,10 @@
 	
 
 
-
+1,如果不确定字典中有没有某个字段，用dict.get("name");如果用dict["name"]会报错
+2，编码：python2中字符串编码有str和unicode，str包含utf-8,gbk. unicode 包含世界节本所有的
+	字符，u"中国"（unicode编码）
+3，post和get都可以在url中带参数，？name="zhangsan". 叫查询字符串。
 
 
 

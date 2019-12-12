@@ -285,8 +285,25 @@
 	在服务里面手动启动mysql服务
 	cmd命令行在C:\Program Files\MySQL\MySQL Server 8.0\bin下执行mysql -u root -p  登录数据库密码：123123
 
+####19，maven
+	mvn tomcat:run
+	下载安装软件,添加环境变量
+	mvn clean;清除
+	mvn compile;编译主目录文件，test没有编译
+	mvn test;
+	mvn package;打包
+	mvn install ;把项目发布到本地仓库，默认放到本地仓库中；执行了compile+test+package
+	
+	mvn的生命周期：compile test package install
+	default生命周期：compile test package install
+	
+	mvn site:生成项目站点；项目描述文档
 
-
+	创建maven项目
+	 1，跳过骨架选择，不跳过缺文件夹。
+	 2，坐标，group id : 公司或组名称
+			artifact id :项目名称
+			package：jar=java项目 。 war=web项目
 
 
 
