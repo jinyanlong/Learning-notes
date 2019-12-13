@@ -207,12 +207,12 @@
 			allow_writeable_chroot=YES
 		注意：配置文件中不能有空行。不能有空格。	
 	3，执行：
-		mkdir -p /var/run/vsftpd/empty
+		mkdir -p /usr/share/empty
 	4， vsftpd &	
 	6，添加用户：
 		useradd -d 主目录 用户名
 		passwd 用户名 //设置用户密码
-		chown -R 用户名 目录    --貌似要执行这个并且不要在telnet中执行，要在串口中执行
+		#chown -R 用户名 目录    --貌似要执行这个并且不要在telnet中执行，要在串口中执行
 	7，windows命令行登录：
 		ftp 192.168.1.225
 	8，用win的cmd终端会有多的错误提示信息。	
@@ -297,6 +297,47 @@
 			Status行：由应用本身（这里是 httpd ）提供的软件当前状态
 			CGroup块：应用的所有子进程
 			日志块：应用的日志
+					
+####24，开机启动
+	以eth1为例: (udhcp)
+		1、删除/etc/systemd/network/15-eth.network
+		2、将udhcpd_eth1.sh拷贝到/home/root目录下，并增加可执行权限；
+		3、将udhcpd.service拷贝到/lib/systemd/system目录下
+		4、将udhcpd_eth1.conf拷贝到/etc目录下
+		5、执行如下命令
+		cd /etc/systemd/system/multi-user.target.wants/
+		ln -sf /lib/systemd/system/udhcpd.service .
+		
+####25，ublox在wxak板子上虚拟出的设备文件为/dev/ttyACM*
+	at指令口为ttyACM0.
+	首先关回显（ate0）。
+	
+####26，指定网卡ping	
+	查看路由表：route|route -n (-n 表示不解析名字,列出速度会比route 快。)
+	ping -I eth1 39.156.66.18 （百度ip）
+	添加默认网关：route add default gw 192.168.1.1 dev eth1
+		route add -net 192.168.1.0 netmask 225.255.255.0 dev eth1
+		route add -net 192.168.1.1  dev eth1
+		route del -net default netmask default dev eth1
+	貌似是先匹配netmask,再匹配Destination，然后判断要不要通过网关发出去，
+	gateway为0.0.0.0表示不需要通过网关。
+	
+	在15-eth.network中添加
+		[Route]
+		Gateway=192.168.1.1
+
+	
+####26，nodejs移植
+	1.下载：node-v10.16.3-linux-armv7l.tar.gz安装包
+	2，解压：tar -xvf node-v10.16.3-linux-armv7l.tar.xz 
+	3，创建链接文件：
+	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/node /usr/sbin/node
+	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/npm /usr/bin/npm 
+
+####27，问题
+	1，vi: can't read user input
+	解决：命令行输入bash
+	
 	
 
 3gReset-B44-gpio3_17=gpio113--ox99c
@@ -307,6 +348,71 @@ beep  gpio1_14=gpio46--0x838
 ./busybox devmem 0x44e109a0
 
 systemctl list-unit-files
+
+ route add default gw 192.168.1.1
+ route add –net 192.168.1.225 netmask 255.255.255.0 gw 192.168.1.1
+ 
+ route add -net default netmask 255.255.255.0 gw 192.168.1.1 dev eth1
+route del -net 192.168.1.0 netmask 255.255.255.0 dev eth1
+
+echo -e "AT">/dev/ttyACM1
+cat /dev/ttyACM1 &
+echo -e "ATE0">/dev/ttyACM1
+echo -e "AT+QGPS=1" > /dev/ttyACM1
+echo -e "AT+QGPSCFG=\"nmeasrc\",1" > /dev/ttyACM1
+##ec20####
+echo -e "AT+QGPSGNMEA=\"RMC\"" > /dev/ttyUSB2
+##ublox###
+echo -e "AT+UGRMC?" > /dev/ttyACM1
+
+
+echo -e "AT+UGPS=0">/dev/ttyACM1
+
+
+关闭gps：
+echo -e "AT+UGPS=0">/dev/ttyACM1
+关闭GPS输出(模块存在BUG,会输出不正常数据),一律用AT指令来获取信息
+echo -e "AT+UGPRF=0">/dev/ttyACM1
+使能$GPRMC：
+echo -e "AT+UGRMC=1">/dev/ttyACM1
+关闭agps：
+echo -e "AT+UGIND=0">/dev/ttyACM1
+启动gps： 
+echo -e "AT+UGPS=1,0">/dev/ttyACM1
+获取位置信息：
+echo -e "AT+UGRMC?" > /dev/ttyACM1
+
+
+
+
+
+Upload record end:{
+"jsonrpc":"2.0","method":"LocationRecord",
+"params":{
+"id":760,"recordType":0,"deviceType":"Tag","uid":"BTT19111201",
+"raiseTime":1538796513579,"saveTime":1538796513583,"userId":"01",
+"areaId":101,"blockId":"0005","tagId":"BTT19111201","flowId":0,
+"x":6.2416838043,"y":5.09564965475,"z":0,"floor":0,"state":0,
+"intensity":1584}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
