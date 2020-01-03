@@ -6,6 +6,7 @@
 	
 ##3，npm install  会生成package-lock.json文件,里面有资源文件路径
 	如果有package-lock.json,则会下载里面的资源
+	npm install --save    会保存到package-lock.json中
 	
 ##4，silly-datetime的安装
 	在所需文件夹下执行：npm install silly-datetime
@@ -80,7 +81,7 @@
 ##18，图片上传插件
 	npm install multiparty
 	
-##19,好评奖励
+##19,参考资料
 	Koa2视频教程下载地址： https://pan.baidu.com/s/1KNaA97kGwNhavch5rP_G7w
 	Typescript视频教程下载地址： https://pan.baidu.com/s/1g51ZuJogubRlL-f8UsZOgQ
 	提取码：17y1
@@ -88,7 +89,6 @@
 
 ##20 sqlite学习
 	arm板在使用npm install 之前需要设置 npm config set strict-ssl false
-	
 	
 	sudo npm install -g sqlite3 --unsafe-perm
 	
@@ -185,6 +185,11 @@
 	单引号会搜索引号内的内容是不是有变量，有则输出其值，没有则输出原有内容
 	console.log(‘$(a)‘);
 
+##31 typescript
+	安装：
+		npm install typescript --registry=http://registry.npm.taobao.org
+	获取全局配置：
+		npm config ls –l
 
 
 

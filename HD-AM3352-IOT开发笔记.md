@@ -58,6 +58,19 @@
 	发送：
 	cansend can0 123#DEADBEEF		//123#表示发送的是标准数据帧
 	./cansend can0 -e 0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
+	
+####4，iic总线调试
+	查看iic总线：ls /dev/i2c*
+	
+	i2cdetect -l指令可以查看TX1上的I2C总线
+	i2cdetect -r -y 1   --查看总线上的设备
+	i2cdump -f -y 1 0x14  --查看地址为0x14地址的i2c设备的寄存器值
+	i2cdump -f -y 1 0x5d
+	i2ctransfer -y -f 1 w2@0x5d 0x80 0x47 r1
+	
+	i2cget -y -f 1 0x5d 0x8140 表示用root权限通过i2cget命令获取地址为0x2a的芯片，0x10寄存器上的值。
+
+	
 
 ####5， 命令行
     df -m  查看磁盘使用情况
@@ -90,19 +103,25 @@
 	led:gpio3_17=113
 	
 	（./busybox devmem 0x44e109a0）读取内存中的值--读取控制寄存器中的值，看gpio口配置的什么模式
-	在Techical Reference Manual.pdf的第二章Memory Map中有Control Module 寄存器的地址0x44E1_0000-0x44E1_1FFF
+	在Techical Reference Manual.pdf的第二章Memory Map中有 Control Module 寄存器的地址0x44E1_0000-0x44E1_1FFF
 	控制寄存器：
 		conf寄存器的第6位是slewctrl，选择快或慢的slew rate；
 		conf寄存器的第5位是rxactive，为0是disabled，为1是enabled；
 		conf寄存器的第4位是putypesel，选择上拉或者下拉，为0是pulldown，为1是pullup；
 		conf寄存器的第3位是puden，使能上拉或者下拉，为0是enables，为1是disabled；
 		conf寄存器的第2-0位是mmode，引脚的功能模式选择。
+		
+	gpio = <&gpio1 29 0>;	/* GPIO1_29 最后一个1表示低电平有效，0表示高电平有效 */
 
 ####4，wifi，bt调试
 	./wifi.sh
-	./bluetooth.sh
-	激活蓝牙模块：hciconfig hci0 up   （在/sys/class/blutooth/hcio）或者开启可检测性和连接:hciconfig hci0 up piscan（其它设备可发现）
-	扫描：hcitool scan
+	蓝牙使用：
+		./bluetooth.sh
+		激活蓝牙模块：hciconfig hci0 up （在/sys/class/blutooth/hcio）
+		或者开启可检测性和连接:hciconfig hci0 up piscan（其它设备可发现）
+		扫描：hcitool scan
+		
+	启动模块前要求BT_RST=0，启动模块后，量下WL_REG_ON是否有拉高
 	
 ####5，v1版本更新：
 	uboot更新在/run/media/mmcblk1p1目录下的MLO|u-boot.img文件
@@ -132,6 +151,7 @@
 		一般用户启动脚本放在/etc/systemd/system/multi-user.target.wants
 
 ####11, 开启usb网络用 modprobe g_ether
+	添加pid，vid的文件：drivers/usb/serial/option.c
 
 ####12，启动顺序与引脚的关系
 	检查下LCD_DATA4-0，对于EMMC版本，正确的启动值为11100，
@@ -153,7 +173,7 @@
 	./qtcreator
 	cd -
 	
-####17,tslib环境配置，触摸屏调试
+####17,tslib环境配置，触摸屏(TP)调试校准
 	把这个解压到/home/root目录下
 	cd /home/root/tslib
 	source ./tslib_env.sh
@@ -171,6 +191,10 @@
 	rmmod ti_am335x_tsc.ko
 	insmod ti_am335x_tsc.ko
 	
+	触摸屏旋转：
+		export QT_QPA_EGLFS_ROTATION=90
+		
+	
 	
 ####18,创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
 	
@@ -179,8 +203,16 @@
 	武汉东湖新技术开发区大学园路长城园路8号海容基孵化园B栋5楼503-2室
 	戴静思 185 7171 0831
 
-####20,低功耗
+####20,低功耗	
+	在内核中,休眠方式有很多种,可以通过下面命令查看
+	cat /sys/power/state
+		freeze:   冻结I/O设备,将它们置于低功耗状态,使处理器进入空闲状态,唤醒最快,耗电比其它standby, mem, disk方式高
+		standby:除了冻结I/O设备外,还会暂停系统,唤醒较快,耗电比其它 mem, disk方式高
+		mem:      将运行状态数据存到内存,并关闭外设,进入等待模式,唤醒较慢,耗电比disk方式高
+		disk:       将运行状态数据存到硬盘,然后关机,唤醒最慢
+	
 	echo mem > /sys/power/state
+	systemctl suspend
 	
 ####21，linux所有的用户在/etc/passwd 文件中
 
@@ -326,7 +358,6 @@
 		[Route]
 		Gateway=192.168.1.1
 
-	
 ####26，nodejs移植
 	1.下载：node-v10.16.3-linux-armv7l.tar.gz安装包
 	2，解压：tar -xvf node-v10.16.3-linux-armv7l.tar.xz 
@@ -334,9 +365,36 @@
 	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/node /usr/sbin/node
 	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/npm /usr/bin/npm 
 
+
 ####27，问题
 	1，vi: can't read user input
 	解决：命令行输入bash
+	2，显示屏红色和蓝色颜色相反的
+		如果用qt5，需要使用GPU的功能，由于qt的eglfs必须使用32位bpp，因此335x硬件接线必须采用24位接线方式，我们提供的开发板是采用16位接线方式的，所以红色和蓝色是反的
+
+####28，GPMC接口	
+AM335X_GPMC_BE1n
+	AM335x的GPMC模块作为一组并行的外部总线接口，使用的频率还是
+		挺高的，在这上面可以挂NAND FLASH，NOR FLASH，FPGA，DM9000等等设备。
+	
+	
+####28，ko驱动模块更新
+	把这个拷贝到内核源码根目录下，模块编译好后，执行这个脚本。会生成modules_install目录。
+	然后将modules_install/lib/modules目录下的4.14.67-gd315a9bb00进行压缩。最后将压缩后的
+	文件，覆盖开发板的/lib/modules同名目录就可以了（只要覆盖就可以了，不要删除原来的目录）
+	
+####29，板级gpio引脚说明：
+	KEEP_PWR在uboot里有拉高，ACOK应该没有用
+		在./board/ti/am335x/board.c（void set_mux_conf_regs(void){...}）文件中修改；
+		 
+
+
+	
+	
+####29，usb调试：
+	ls  /sys/bus/usb/devices/
+	cat  /sys/kernel/debug/usb/devices
+	
 	
 	
 
@@ -382,18 +440,6 @@ echo -e "AT+UGPS=1,0">/dev/ttyACM1
 获取位置信息：
 echo -e "AT+UGRMC?" > /dev/ttyACM1
 
-
-
-
-
-Upload record end:{
-"jsonrpc":"2.0","method":"LocationRecord",
-"params":{
-"id":760,"recordType":0,"deviceType":"Tag","uid":"BTT19111201",
-"raiseTime":1538796513579,"saveTime":1538796513583,"userId":"01",
-"areaId":101,"blockId":"0005","tagId":"BTT19111201","flowId":0,
-"x":6.2416838043,"y":5.09564965475,"z":0,"floor":0,"state":0,
-"intensity":1584}}
 
 
 
