@@ -194,6 +194,29 @@
 	触摸屏旋转：
 		export QT_QPA_EGLFS_ROTATION=90
 		
+	ti_am335x_adc         
+	ti_am335x_tscadc
+	
+	hexdump /dev/input/event2
+		 /dev/event0            //触摸屏驱动
+		# hexdump /dev/event0 
+		//hexdump序列号          秒             微妙        绝对坐标事件    code=ABS_X   X坐标值 
+		0000000               0412 0000      6ef0 000c      0003          0000      0239 0000
+		//hexdump序列号          秒             微妙        绝对坐标事件    code=ABS_Y   Y坐标值
+		0000010                 0412 0000    6f08 000c      0003          0001      01ae 0000
+		//hexdump序列号          秒             微妙        绝对坐标事件    code=压力     压力值
+		0000020             0412 0000        6f0c 000c      0003          0018      0001 0000
+		//hexdump序列号          秒             微妙        键盘事件       code=触摸按键  value=1(按下)
+		0000030              0412 0000       6f10 000c      0001          014a      0001 0000
+		//hexdump序列号          秒             微妙        同步事件      
+		0000040             0412 0000        6f13 000c      0000          0000      0000 0000
+		//hexdump序列号          秒             微妙        绝对坐标事件    code=压力     压力值
+		00000b0               023b 0000      872d 000c      0003          0018      0000 0000
+		//hexdump序列号          秒             微妙        键盘事件      code=触摸按键  value=0(松开)
+		00000b0            0412 0000         1f5b 000d     0001          014a       0000 0000
+		//hexdump序列号          秒             微妙        同步事件      
+		00000c0             0412 0000        1f70 000d     0000          0000       0000 0000
+		
 	
 	
 ####18,创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。

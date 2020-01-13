@@ -8,3 +8,5 @@
 	  float b=2.0;
 	  auto c = add<decltype(a+b)>(a,b);
 	}
+	
+##2，operator 运算符重载
