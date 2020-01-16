@@ -124,6 +124,14 @@
 	destory-method:
 	aop：纵向抽取，横向重复
 	aop：代理对象=通知（环绕通知：事务）+业务逻辑
+	
+	创建动态web项目-》导入spring包-》添加applicationContext.xml文件-》添加
+	约束。
+	applicationContext.xml解析
+		<context:component-scan base-package="cn.itcast.bean"></context:component-scan>
+		<!-- 指定扫描cn.itcast.bean报下的所有类中的注解.
+			 注意:扫描包时.会扫描指定报下的所有子孙包
+		 -->
 
 ####11，数据库
 	如果不考虑数据库的隔离性，事务存在三个并发问题
@@ -305,10 +313,18 @@
 			artifact id :项目名称
 			package：jar=java项目 。 war=web项目
 
-
-
-
-
+####20，注解开发
+	@Service用在类上，注册为一个bean，bean名称默认为类名称(首字母小写)，
+	    也可以手动指定@Service(“abc”)或@Service(value = “abc”)
+	@Autowired优先根据属性类型匹配，根据属性类型只匹配到一个时，则直接使
+		用，不再比较属性值；当匹配到多个时再根据属性名称匹配，@Autowired
+		可以用在已注册为bean的类的属性上，来引用其他外部bean，属性的类型
+		为外部bean的类名或外部bean实现的接口名，
+	@Component	最普通的组件，可以被注入到spring容器进行管理。
+		就是跟<bean>一样，可以托管到Spring容器进行管理。
+	@Repository	作用于持久层
+	@Service	作用于业务逻辑层
+	@Controller	作用于表现层（spring-mvc的注解）
 
 
 
