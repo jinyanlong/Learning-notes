@@ -18,4 +18,9 @@ alert  警告
 onblur  失去焦点
 compatible 兼容的
 ResourceBundle 资源包
+isolation 隔离（数据库）
+schema 架构
+propagation 传播
+annotation 注释
+Transactional 事务
 

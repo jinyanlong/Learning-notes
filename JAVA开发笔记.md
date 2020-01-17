@@ -127,11 +127,26 @@
 	
 	创建动态web项目-》导入spring包-》添加applicationContext.xml文件-》添加
 	约束。
-	applicationContext.xml解析
+	spring配置文件，applicationContext.xml解析
 		<context:component-scan base-package="cn.itcast.bean"></context:component-scan>
 		<!-- 指定扫描cn.itcast.bean报下的所有类中的注解.
 			 注意:扫描包时.会扫描指定报下的所有子孙包
 		 -->
+		 
+	SpringMVC是基于Spring功能之上添加的Web框架
+	spring boot 我理解就是把 spring spring mvc spring data jpa 等等的一些常用的常用的基础框架组合起来，提供默认的配置，然后提供可插拔的设计
+
+####10，springMVC
+   springmvc的流程：
+		1、 用户发送请求至前端控制器DispatcherServlet；
+		2、DispatcherServlet收到请求调用HandlerMapping处理器映射器；
+		3、处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet；
+		4、DispatcherServlet通过HandlerAdapter处理器适配器调用处理器，执行处理器(Controller，也叫后端控制器)；
+		5、Controller执行完成返回ModelAndView，并返回给HandlerAdapter，HandlerAdapter将结果返回给DispatcherServlet；
+		6、DispatcherServlet将ModelAndView传给ViewReslover视图解析器，ViewReslover解析后返回具体View给DispatcherServlet；
+		7、DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）后返回给给客户
+
+	
 
 ####11，数据库
 	如果不考虑数据库的隔离性，事务存在三个并发问题
@@ -232,7 +247,8 @@
 	这个Java类必须具有一个无参的构造函数|属性必须私有化。
 	私有化的属性必须通过public类型的方法暴露给其它程序，并且方法的命名也必须遵守一定的命名规范。
 	
-	
+	synchronized：只有一个线程可以执行某个方法或某个代码块，同一时刻只有一个方法可以进入到临界区，同时它还可以保证共享变量的内存可见性。
+
 	
 	
 ####15，数据结构
@@ -316,17 +332,45 @@
 ####20，注解开发
 	@Service用在类上，注册为一个bean，bean名称默认为类名称(首字母小写)，
 	    也可以手动指定@Service(“abc”)或@Service(value = “abc”)
-	@Autowired优先根据属性类型匹配，根据属性类型只匹配到一个时，则直接使
+		
+	@Autowired：优先根据属性类型匹配，根据属性类型只匹配到一个时，则直接使
 		用，不再比较属性值；当匹配到多个时再根据属性名称匹配，@Autowired
 		可以用在已注册为bean的类的属性上，来引用其他外部bean，属性的类型
 		为外部bean的类名或外部bean实现的接口名，
+	@Qualifier("user2") - 如果有多个同类型的实例，则这用这个
+	@value 赋值
+	@Resource（这个注解属于J2EE的），默认按照名称进行装配。
+	
 	@Component	最普通的组件，可以被注入到spring容器进行管理。
 		就是跟<bean>一样，可以托管到Spring容器进行管理。
+		@RequestMapping注解来将请求URL映射到整个类上
 	@Repository	作用于持久层
 	@Service	作用于业务逻辑层
 	@Controller	作用于表现层（spring-mvc的注解）
-
-
+	@Scope(scopeName="singleton") - 单例模式
+		scope="prototype"多例
+	@PostConstruct - 在对象创建后被调用 init-method
+	@PreDestory - 在销毁前调用 - destory-method
+	
+	aop编程：
+		@Pointcut("execution(* cn.itcast.service.*ServiceImpl.*(..))") - 切入点
+		
+####21，spring配置文件
+	<context:component-scan base-package="cn.itcast.bean"></context:component-scan>  - 指定扫描cn.itcast.bean报下的所有类中的注解.
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy> - aop切面代理
+		@Pointcut("execution(* cn.itcast.service.*ServiceImpl.*(..))") - 切入点
+		@AfterReturning("execution(* cn.itcast.service.*ServiceImpl.*(..))") - 后置通知
+	<context:property-placeholder location="classpath:db.properties"  /> - 指定spring读取db.properties配置
+	<tx:annotation-driven/> -  开启使用注解管理aop事务 
+		@Transactional(isolation=Isolation.REPEATABLE_READ,propagation=Propagation.REQUIRED,readOnly=false)
+		
+####21，springmvc配置文件
+	 <context:component-scan base-package="com.itheima"/> - 扫描文件夹下带注解的bean
+	 <mvc:annotation-driven/> - 注解的方式启用事务
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -- 视图解释器 
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
 
 
 
