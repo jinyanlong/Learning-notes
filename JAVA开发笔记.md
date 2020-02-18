@@ -327,7 +327,16 @@
 	 1，跳过骨架选择，不跳过缺文件夹。
 	 2，坐标，group id : 公司或组名称
 			artifact id :项目名称
-			package：jar=java项目 。 war=web项目
+			package：jar=java项目 。 war=web项目. pom：父工程。。
+			
+	包的作用范围：
+		compile:(struts2-core)编译时需要，运行时也需要，运行时需要
+		provided：（jsp-api.rar,servlet-api.jar）编译时需要，测试时也需要。运行时不需要（打包时不需要）。不会打包到war包中
+		test:（junit）编译时不需要，测试时需要
+		runtime:（mysql驱动包）编译时不需要,测试时需要，运行时需要
+		
+	tomcat7:run
+		
 
 ####20，注解开发
 	@Service用在类上，注册为一个bean，bean名称默认为类名称(首字母小写)，
