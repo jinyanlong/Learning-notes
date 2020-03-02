@@ -1,0 +1,77 @@
+1；在win下命令行使用adb devices命令查看所有的adb设备。
+命令：
+win7 终端执行 adb reboot bootloader:重启进入烧录模式
+重启：fastboot reboot
+	一定要使用 fastboot reboot 命令让模块重启，否则模块开机还是会进入 fastboot 模式
+fastboot devices：查看所有处于烧录模式的设备，在这种模式下使用adb指令来擦除和烧录文件
+例子：
+命令基本格式：
+sudo adb push <local path> <module path>
+例如
+adb push ~/ql-ol-sdk/ql-ol-extsdk/example/helloWorld/hellolworld /usrdata
+或者用3进入
+
+在fastboot模式下执行fastboot erase sbl-> fastboot reboot进入QLoader模式
+2；
+默认ec20的登录账号和登录名为：
+账号：root
+密码：quectel123
+
+3，固件更新：在debug串口开机过程中按ctrl+c， 然后输入fastboot进入fastboot模式，在PC端就可以用 fastboot烧录文件
+例如：fastboot flash boot mdm9607-boot.img
+
+4，软件更新，可以用sorceCRT用zmode发送软件或者用adb指令操作
+例如：sudo adb push <local path> <module path>
+     adb push ~/ql-ol-sdk/ql-ol-extsdk/example/helloWorld/hellolworld /usrdata
+
+5，编译：
+	a,使能环境变量：source ql-ol-crosstool/ql-ol-crosstool-env-init
+	b,编译uboot：make aboot |make aboot/clean  |target/下生成 appsboot.mbn
+	c,编译linux：有时需要先执行make mrproper清理
+		make kernel_menuconfig |
+		make kernel|make kernel_module |make kernel/clean  |编译生成 boot.img 在当前路径 target/下
+		编译debug版本：make debug_kernel_menuconfig | make debug_versi
+	d,编译rootfs：make rootfs |make rootfs/clean  |编译生成 sysfs.ubi，放在当前路径 target/下
+	
+	e:Flash 默认有一个 usr_data 分区，可以用来存放用户的文件和进行 DFOTA 升级使用。
+	make usrdata //生成 usrdata.ubi
+
+	f:遇到问题需要打开内核调试 Log 的时候，需要编译 Debug 版本
+	make debug_kernel_menuconf->make debug_versi
+
+6，擦除：
+格式: fastboot erase <partition>
+烧写完毕后，输入 fastboot reboot 重启模块，退出 fastboot 模式
+
+7，烧写：
+格式: fastboot flash <partition> <filename>
+分区：
+分区名 可执行文件名  说明
+aboot appsboot.mbn BootLoader
+boot mdm9607-perf-boot.img kernel
+modem NON-HLOS.ubi modem
+usr_data usrdata.ubi 用户数据
+system mdm9607-perf-sysfs.ubi rootfs
+
+8,文件系统一定要在他们提供的虚拟机上编译，自己配置的虚拟机编译出来是80多M，他们提供的虚拟机编译只有50M。说是环境变量配置有问题。
+
+9，source /home/jyl/jyl-work/board/EC20/EC20-CHENGONG/firmware_SDK/EC20CEFAGR06A04M4G_OCPU_SDK/ql-ol-sdk/ql-ol-crosstool/ql-ol-crosstool-env-init
+在sh脚本中执行结果和
+
+10，回顾：
+	./etc/init.d/ec20App.sh
+	./etc/rc5.d/S99ec20App.sh
+	/usrdata/ec20App
+	/etc/profile
+
+	/*boost  /usrdata/lib/ */
+	libboost_system.a          libboost_thread.a          upgrade_libboost.tar.gz
+	libboost_system.so         libboost_thread.so
+	libboost_system.so.1.67.0  libboost_thread.so.1.67.0
+
+	工具位置：
+	D:\jyl\data\EC20\NET\EC20 R2.0&EC20 R2.1 QuecOpen全资料\6-tool\Quectel_Customer_FW_Download_Tool_V4.30\Release_Multi
+
+
+
+			

@@ -380,6 +380,11 @@
 	在15-eth.network中添加
 		[Route]
 		Gateway=192.168.1.1
+	
+	连接外网的路由：
+		Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+		0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 eth0
+		192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
 
 ####26，nodejs移植
 	1.下载：node-v10.16.3-linux-armv7l.tar.gz安装包
@@ -387,6 +392,20 @@
 	3，创建链接文件：
 	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/node /usr/sbin/node
 	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/npm /usr/bin/npm 
+	
+	如果报错：npm ERR! code CERT_NOT_YET_VALID
+		解决：npm config set strict-ssl false
+		
+	vue安装过程中可能会碰到：certificate is not yet valid	的错误；
+		解决：只要更新开发板的时间到utc当前时间就可以。
+			date -s "2020-3-2 5:50:30"
+			hwclock -w
+####26，vue使用
+	npm install -g vue
+	vue init webpack test1
+	cd test1
+	cnpm install
+	npm run dev
 
 
 ####27，问题
@@ -409,14 +428,19 @@ AM335X_GPMC_BE1n
 ####29，板级gpio引脚说明：
 	KEEP_PWR在uboot里有拉高，ACOK应该没有用
 		在./board/ti/am335x/board.c（void set_mux_conf_regs(void){...}）文件中修改；
-		 
-
-
-	
 	
 ####29，usb调试：
 	ls  /sys/bus/usb/devices/
 	cat  /sys/kernel/debug/usb/devices
+
+####30，wxak的模块启动qt
+	#!/bin/sh
+	source ./linux-devkit/environment-setup
+	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/
+	./qtcreator
+	cd -
+	qt web使用的例子为：QuickViewer-wxak
+
 	
 	
 	
