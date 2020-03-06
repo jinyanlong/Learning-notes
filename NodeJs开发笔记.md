@@ -190,6 +190,7 @@
 		npm install typescript --registry=http://registry.npm.taobao.org
 	获取全局配置：
 		npm config ls –l
+		
 
 
 

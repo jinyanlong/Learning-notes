@@ -70,6 +70,15 @@
 	
 	i2cget -y -f 1 0x5d 0x8140 表示用root权限通过i2cget命令获取地址为0x2a的芯片，0x10寄存器上的值。
 
+	ds3231:(id：68)
+		https://shumeipai.nxez.com/2019/05/08/raspberry-pi-configuration-of-ds3231-clock-module-i2c-interface.html
+		设备文件在/sys/class/rtc/rtc0.
+		驱动：/sys/bus/i2c/drivers/rtc-ds3231
+		
+		hwclock -r   --读取芯片时间
+		date -s "2020-3-2 5:50:30"  -时间保存到系统
+		hwclock -w   --写入时钟芯片
+		
 	
 
 ####5， 命令行
@@ -130,6 +139,7 @@
 ####6，sd卡升级
 	sd卡文件系统中，在rootfs-sd.tar.gz下的/etc/sfdisk_emmc.sh脚本是用于给emmc做分区的脚本，/etc/emmc_program.sh是执行emmc烧写的脚本
 	启动的服务在/lib/systemd/system/emmc_program.service中；
+	制作sd卡：sudo ./build_sdcard.sh --device /dev/sdb
 	
 ####7，uboot中显示图片
 	uboot中显示图片将MLO和u-boot.img更新后，uboot下需要显示的logo也需要拷贝到/run/media/mmcblk1p1/目录下，并重命名为splash.bmp
@@ -150,8 +160,10 @@
 	在这里调用：
 		一般用户启动脚本放在/etc/systemd/system/multi-user.target.wants
 
-####11, 开启usb网络用 modprobe g_ether
+####11, 开启usb网络(otg)用 modprobe g_ether
 	添加pid，vid的文件：drivers/usb/serial/option.c
+	设置电脑ip地址；
+	设置开发板地址：ifconfig usb0 192.168.0.1
 
 ####12，启动顺序与引脚的关系
 	检查下LCD_DATA4-0，对于EMMC版本，正确的启动值为11100，
@@ -385,6 +397,26 @@
 		Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 		0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 eth0
 		192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
+	
+	文件：15-eth.network	
+		[Match]
+		Name=eth1
+		KernelCommandLine=!root=/dev/nfs
+
+		[Link]
+		RequiredForOnline=no
+
+		[Network]
+		DHCP=no
+		Address=192.168.1.225
+
+		[Route]
+		Destination=0.0.0.0
+
+		[Route]
+		Gateway=192.168.1.1
+		
+	目前网卡0带poe，能给板子供电。
 
 ####26，nodejs移植
 	1.下载：node-v10.16.3-linux-armv7l.tar.gz安装包
@@ -415,9 +447,9 @@
 		如果用qt5，需要使用GPU的功能，由于qt的eglfs必须使用32位bpp，因此335x硬件接线必须采用24位接线方式，我们提供的开发板是采用16位接线方式的，所以红色和蓝色是反的
 
 ####28，GPMC接口	
-AM335X_GPMC_BE1n
-	AM335x的GPMC模块作为一组并行的外部总线接口，使用的频率还是
-		挺高的，在这上面可以挂NAND FLASH，NOR FLASH，FPGA，DM9000等等设备。
+	AM335X_GPMC_BE1n
+		AM335x的GPMC模块作为一组并行的外部总线接口，使用的频率还是
+			挺高的，在这上面可以挂NAND FLASH，NOR FLASH，FPGA，DM9000等等设备。
 	
 	
 ####28，ko驱动模块更新
@@ -470,7 +502,6 @@ echo -e "AT+QGPSGNMEA=\"RMC\"" > /dev/ttyUSB2
 ##ublox###
 echo -e "AT+UGRMC?" > /dev/ttyACM1
 
-
 echo -e "AT+UGPS=0">/dev/ttyACM1
 
 
@@ -487,9 +518,7 @@ echo -e "AT+UGPS=1,0">/dev/ttyACM1
 获取位置信息：
 echo -e "AT+UGRMC?" > /dev/ttyACM1
 
-
-
-
+echo -e "AT" > /dev/ttyUSB2
 
 
 
