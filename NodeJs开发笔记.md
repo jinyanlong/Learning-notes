@@ -191,8 +191,9 @@
 	获取全局配置：
 		npm config ls –l
 		
-
-
+##32 class
+	静态变量：如果在constractor(){A.x=1},则必须在new A()之后才能调用A.x,否则是unfined.
+			  或者在class类的外边用A.x定义静态变量
 
 
 

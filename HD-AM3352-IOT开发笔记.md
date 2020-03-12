@@ -277,7 +277,7 @@
 		mkdir -p /usr/share/empty
 	4， vsftpd &	
 	6，添加用户：
-		useradd -d 主目录 用户名
+		useradd 用户名（useradd -d 主目录 用户名）
 		passwd 用户名 //设置用户密码
 		#chown -R 用户名 目录    --貌似要执行这个并且不要在telnet中执行，要在串口中执行
 	7，windows命令行登录：
