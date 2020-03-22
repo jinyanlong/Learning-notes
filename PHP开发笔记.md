@@ -100,7 +100,9 @@
 		header("content-type:text/html;charset=utf=8") --设置php返回数据的字符集
 		header("location:http://www.baidu.com") 网页跳转
 
-
+##5,thinkphp
+	路径大小写不敏感
+	路径：模块+控制器+方法名
 
 
 
