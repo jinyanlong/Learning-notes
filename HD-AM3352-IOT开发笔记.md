@@ -148,8 +148,10 @@
 	（这个和三星的CPU有点不同，三星的一般在GPIO的寄存器中配置）
 
 ####9，开机启动|自启动脚本制作
+	ln -sf 源文件  链接文件
 	ln -s /etc/init.d/jyl.sh /etc/rc2.d/S17jyl
 	ln -sf /etc/init.d/start-collecion-jyl.sh  /etc/rc2.d/S17start-collecion-jyl
+	源文件可以是相对路径，链接文件：在链接文件所在文件夹中执行或者绝对路径
 	
 ####10, ec20ppp拨号网址：
 	https://blog.csdn.net/u013162035/article/details/81840893
@@ -280,6 +282,7 @@
 		useradd 用户名（useradd -d 主目录 用户名）
 		passwd 用户名 //设置用户密码
 		#chown -R 用户名 目录    --貌似要执行这个并且不要在telnet中执行，要在串口中执行
+		chown -Rh ftp app/  --ftp可用传输文件
 	7，windows命令行登录：
 		ftp 192.168.1.225
 	8，用win的cmd终端会有多的错误提示信息。	
@@ -364,6 +367,9 @@
 			Status行：由应用本身（这里是 httpd ）提供的软件当前状态
 			CGroup块：应用的所有子进程
 			日志块：应用的日志
+			
+	/etc/systemd/system/sysinit.target.wants/yz-gpio-init.service ->
+	-> /lib/systemd/system/yz-gpio-init.service
 					
 ####24，开机启动
 	以eth1为例: (udhcp)
@@ -473,6 +479,8 @@
 	cd -
 	qt web使用的例子为：QuickViewer-wxak
 
+####30，域名解析
+	在/etc/resolv.conf中添加：nameserver 114.114.114.114
 	
 	
 	
@@ -521,7 +529,21 @@ echo -e "AT+UGRMC?" > /dev/ttyACM1
 echo -e "AT" > /dev/ttyUSB2
 
 
-
+start-app.service 
+[Unit]
+Description=start app service
+DefaultDependencies=no
+Wants=sysinit.target
+Conflicts=shutdown.target
+After=yz-gpio-init.service
+ 
+[Service]
+ExecStart=/bin/sh /home/root/app/start-app.sh
+Type=oneshot
+RemainAfterExit=yes
+ 
+[Install]
+WantedBy=multi-user.target
 
 
 

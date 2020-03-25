@@ -46,8 +46,27 @@
 	枚举enum和结构struct权限
 		枚举类型成员默认为public访问修饰符，且不能显示的使用其他修饰符。
 		结构成员默认private修饰符，
+		
+##7,委托(delegate),事件(event)
+    public class EventTest
+    {
+        private int value;
 
-
+        public delegate void NumManipulationHandler();  //委托
+        public event NumManipulationHandler ChangeNum;	//事件
+		public void SetValue(int n)
+        {
+            if (value != n)
+            {
+                value = n;
+                ChangeNum?.Invoke();   //调用所有订阅事件的方法
+            }
+        }
+	}
+	EventTest e = new EventTest(); /* 实例化对象,第一次没有触发事件 */
+	subscribEvent v = new subscribEvent(); /* 实例化对象 */
+	e.ChangeNum += new EventTest.NumManipulationHandler(v.printf)
+	e.SetValue(7);
 
 
 
