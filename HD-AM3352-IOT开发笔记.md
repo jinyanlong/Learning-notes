@@ -545,8 +545,37 @@ RemainAfterExit=yes
 [Install]
 WantedBy=multi-user.target
 
+qt例子
+/usr/share/qt5/examples/qml/tutorials/extending-qml/chapter1-basics
 
 
+/home/qtapp/testapp # cat qtapp.sh 
+ 
+EXEC_NAME=qt_helloworld
+chmod a+x $EXEC_NAME
+export T_ROOT=/home/qtapp/tslib
+export TSLIB_CONSOLEDEVICE=none
+export TSLIB_FBDEVICE=/dev/fb0                        
+export TSLIB_TSDEVICE=/dev/event0 
+export TSLIB_CALIBFILE=/home/etc/pointercal
+export TSLIB_CONFFILE=$T_ROOT/etc/ts.conf
+export TSLIB_PLUGINDIR=$T_ROOT/lib/ts/
+ln -sf /home/qtapp/lib_qt/ /usr/lib
+export POINTERCAL_FILE=/home/etc/pointercal
+export QWS_MOUSE_PROTO="TSLIB:/dev/event0 linuxinput:/dev/event1"
+export QT_PLUGIN_PATH=/home/qtapp/lib_qt/plugins
+export QT_QWS_FONTDIR=/home/qtapp/lib_qt/fonts
+export LD_LIBRARY_PATH=/home/qtapp/lib_qt:$T_ROOT/lib
+killall $EXEC_NAME
+cd /home/qtapp/testapp
+./$EXEC_NAME -qws 
+
+
+modinfo pvrsrvctl
+pvrsrvctl --start --no-module
+pvrsrvctl --start
+
+-javaagent:D:\Program Files\JetBrains\IntelliJ IDEA 2019.3.4\bin\jetbrains-agent.jar
 
 
 
