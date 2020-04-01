@@ -191,10 +191,10 @@
 ​		
 ​	BIGINT(M)，M默认为20;M表示显示宽度。
 ​	
-	声明外键： KEY `FK_cst_linkman_lkm_cust_id` (`lkm_cust_id`),
-				CONSTRAINT `FK_cst_linkman_lkm_cust_id` FOREIGN KEY (`lkm_cust_id`) REFERENCES
-				`cst_customer` (`cust_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-	
+​	声明外键： KEY `FK_cst_linkman_lkm_cust_id` (`lkm_cust_id`),
+​				CONSTRAINT `FK_cst_linkman_lkm_cust_id` FOREIGN KEY (`lkm_cust_id`) REFERENCES
+​				`cst_customer` (`cust_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+​	
 	外键约束：no action:意思同restrict.即如果存在从数据，不允许删除主数据。
 		cascade(级联):当在父表（即外键的来源表）中删除对应记录时，首先检查该记录是
 			否有对应外键，如果有则也删除外键在子表（即包含外键的表）中的记录。
@@ -306,10 +306,6 @@
 ​	二是onload，指示页面包含图片等文件在内的所有元素都加载完成。
 ​	jQuery(document)相当于$(function(){}其实这个就是jq ready()的简写$(document).ready(function(){}
 
-####19，mysql数据库
-​	在服务里面手动启动mysql服务
-​	cmd命令行在C:\Program Files\MySQL\MySQL Server 8.0\bin下执行mysql -u root -p  登录数据库密码：123123
-
 ####19，maven
 ​	mvn tomcat:run
 ​	下载安装软件,添加环境变量
@@ -374,7 +370,7 @@
 ​	<tx:annotation-driven/> -  开启使用注解管理aop事务 
 ​		@Transactional(isolation=Isolation.REPEATABLE_READ,propagation=Propagation.REQUIRED,readOnly=false)
 ​		
-####21，springmvc配置文件
+#### 21，springmvc配置文件
 ​	 <context:component-scan base-package="com.itheima"/> - 扫描文件夹下带注解的bean
 ​	 <mvc:annotation-driven/> - 注解的方式启用事务
 ​	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -- 视图解释器 
@@ -383,6 +379,11 @@
 ​	</bean>
 
 
+
+## 21.mysql数据库
+	> 在服务里面手动启动mysql服务
+	>
+	> cmd命令行在C:\Program Files\MySQL\MySQL Server 8.0\bin下执行mysql -u root -p  登录数据库密码：   123123
 
 ## 22. springboot
 
@@ -395,6 +396,9 @@
 > * @ResponseBody   函数返回的字符串放到res包中
 > * @RequestMapping("/hello")    请求路径
 > * @RestController  相当于@Controller+@ResponseBody
+> * @GetMapping("/emps")
+> * @PostMapping("/emp")
+> * (@RequestParam("username") String username)
 >
 > @SpringBootConfiguration    springboot配置类
 >
@@ -410,9 +414,17 @@
 >
 > @ConfigurationProperties(prefix = "person")：告诉SpringBoot将本类中的所有属性和配置文件中相关的配置进行绑定；默认从全局配置文件中获取值；
 >
-> @Component被用在要被自动扫描和装配的类(@AutoWired)上。放到类上边。
+> @Component  用在要被自动扫描和装配的类(@AutoWired)上。放到类上边。
+>
+> ​	@PropertySource(value = {"classpath:person.properties"})  //指定某个类的初始化文件
 >
 > @Bean主要被用在方法上，来显式声明要用生成的类。放到返回实例的方法上。
+>
+> @ImportResource(locations = {"classpath:beans.xml"})  //导入xml文件
+>
+> class HandlerInterceptor  拦截器
+>
+>
 
 
 
