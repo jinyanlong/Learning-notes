@@ -195,11 +195,11 @@
 ​				CONSTRAINT `FK_cst_linkman_lkm_cust_id` FOREIGN KEY (`lkm_cust_id`) REFERENCES
 ​				`cst_customer` (`cust_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ​	
-	外键约束：no action:意思同restrict.即如果存在从数据，不允许删除主数据。
-		cascade(级联):当在父表（即外键的来源表）中删除对应记录时，首先检查该记录是
-			否有对应外键，如果有则也删除外键在子表（即包含外键的表）中的记录。
-		set null:当在父表（即外键的来源表）中删除对应记录时，首先检查该记录是否有对
-			应外键，如果有则设置子表中该外键值为null（不过这就要求该外键允许取null）
+​	外键约束：no action:意思同restrict.即如果存在从数据，不允许删除主数据。
+​		cascade(级联):当在父表（即外键的来源表）中删除对应记录时，首先检查该记录是
+​			否有对应外键，如果有则也删除外键在子表（即包含外键的表）中的记录。
+​		set null:当在父表（即外键的来源表）中删除对应记录时，首先检查该记录是否有对
+​			应外键，如果有则设置子表中该外键值为null（不过这就要求该外键允许取null）
 
 ####12，oracle
 ​	表-》用户-》数据库
@@ -387,7 +387,7 @@
 
 ## 22. springboot
 
-#### 1,注解
+### 1,注解
 
 > @SpringBootApplication     标注一个主程序类，说明是一个springboot应用
 >
@@ -412,6 +412,8 @@
 >
 > @Configuration用于定义配置类，可替换xml配置文件，被注解的类内部包含有一个或多个被@Bean注解的方法
 >
+> ​	@EnableWebMvc    不要接管SpringMVC,否则静态资源目录等都要自己配置。
+>
 > @ConfigurationProperties(prefix = "person")：告诉SpringBoot将本类中的所有属性和配置文件中相关的配置进行绑定；默认从全局配置文件中获取值；
 >
 > @Component  用在要被自动扫描和装配的类(@AutoWired)上。放到类上边。
@@ -422,19 +424,55 @@
 >
 > @ImportResource(locations = {"classpath:beans.xml"})  //导入xml文件
 >
+> @GetMapping("/emp/{id}")
+>
+> ​	@PathVariable("id") Integer id,
+>
+>
+>
+>
+
+### 2,静态资源
+
+> "/**" 访问当前项目的任何资源，都去（静态资源的文件夹）找映射.
+>
+> ​	"classpath:/META-INF/resources/", 
+> ​	"classpath:/resources/",
+> ​	"classpath:/static/", 
+> ​	"classpath:/public/" 
+> ​	"/"：当前项目的根路径
+
+### 3，springboot web配置
+
+> Class WebMvcConfigurerAdapter
+>
+> ​	addViewControllers() -配置视图控制。
+>
+> ​	addInterceptors() - 注册拦截器，比如登陆检查	
+>
+> 所有的WebMvcConfigurerAdapter组件都会一起起作用
+
+### 4，拦截器
+
 > class HandlerInterceptor  拦截器
+
+### 5,Thymeleaf
+
+> * 关闭缓存：spring.thymeleaf.cache=false 	--html页面修改后可以直接使用，不然修改后浏览器没有改变。
 >
+> * ctrl+f9重新编译，不然运行期间无效。
 >
+> * ${...}：获取变量值
+> * #{...}：获取国际化内容
+> * ~{...}: 片段引入
+> *   <div th:insert="~{footer :: bar}" />
+> * th:insert  整个插入到元素中
+> * th:replace   替换
+> * th:include    用被引用的标签
 
+## 23，Docker
 
-
-
-
-
-
-
-
-
+> * Docker 容器引擎，将软件打包为镜像
 
 
 
