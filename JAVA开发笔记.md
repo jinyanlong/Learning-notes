@@ -350,7 +350,7 @@
 	@Component	最普通的组件，可以被注入到spring容器进行管理。
 		就是跟<bean>一样，可以托管到Spring容器进行管理。
 		@RequestMapping注解来将请求URL映射到整个类上
-	@Repository	作用于持久层
+	@Repository	作用于持久层不只是将类识别为Bean，同时它还能将所标注的类中抛出的数据访问异常封装为 	Spring 的数据访问异常类型
 	@Service	作用于业务逻辑层
 	@Controller	作用于表现层（spring-mvc的注解）
 	@Scope(scopeName="singleton") - 单例模式
@@ -428,9 +428,13 @@
 >
 > ​	@PathVariable("id") Integer id,
 >
+> @PostConstruct  -指定该方法在对象被创建后马上调用 相当于配置文件中的init-method属性
 >
+> @Transient  -某个javabean上需要添加个属性，但是这个属性你又不希望给存到数据库中去，仅仅是做个临时变量，
 >
+> @interface  -自定义注解的标志。
 >
+> @SuppressWarnings("rawtypes")  -取消一些编译器产生的警告 （多类型）
 
 ### 2,静态资源
 
@@ -472,9 +476,92 @@
 
 ## 23，Docker
 
+> * 百度dockerhub
+> * 镜像，容器
+> * docker自启动：systemctl enable docker.service
+> * docker container update id --restart=unless-stopped      --容器自启动（如果已经运行）
+> * 容器自启动：docker run -p 8888:8888 --restart=unless-stopped location-engine  似于always，除了当容器停止（手动或其他方式）时，即使在Docker守护程序重新启动后也不会重新启动容器。
+> * 镜像导出：docker save -o location-engine.tar location
+> * 导入：docker load -i nginx.tar
+> * service docker start  --启动docker
 > * Docker 容器引擎，将软件打包为镜像
+> * docker search 镜像名字搜索镜像
+> * docker -ps   所有运行的容器
+> * docker -ps -a  所有的容器，包括未启动的容器。
+> * docker stop 容器的id   --停止运行中的容器。
+> * docker start 容器id   --启动容器
+> * docker run -d -p 9000:3333 docker_demo1    --启动
+> * docker rm 容器id     --f 强行移除该容器，即使其正在运行；    --删除容器
+> * docker rmi 镜像名字 删除镜像
+> * service firewalld status # 查看防火墙状态
+>   service firewalld stop   # 关闭防火墙
+> * docker rm $(docker ps -aq) ：删除所有容器
+> * dockerfile
+>
+>     - CMD 在docker run 时运行。
+>     - RUN 是在docker build时运行。
+>     - ENV NODE_VERSION 7.2.0    设置环境变量，定义了环境变量，那么在后续的指令中，就可以使用这个环境变量。
+>     - WORKDIR   -- 指定工作目录。用 WORKDIR 指定的工作目录，会在构建镜像的每一层中都存在。（WORKDIR 指定的工作目录，必须是提前创建好的）
+>     - EXPOSE  --仅仅只是声明端口
+>     - FROM node:8.9.4-alpine     --引用镜像
+>
+>
+> * docker pull registry.docker-cn.com/library/ubuntu:16.04    ---国内镜像
+>
+> * sudo systemctl daemon-reload   --重新下载文件
+>
+> * service docker restart    ---重启 daemon 
+>
+> * sudo docker build -t docker_demo1 .
+>
+> * 使用国内镜像：
+>
+>   docker安装后默认没有daemon.json这个配置文件，需要进行手动创建。配置文件的默认路径：/etc/docker/daemon.jsonsudo vim /etc/docker/daemon.json
+>
+>   ```json
+>   {
+>    "registry-mirrors": ["https://registry.docker-cn.com"]
+>   }
+>   //ubuntu
+>   {"registry-mirrors":["https://reg-mirror.qiniu.com/"]}
+>   //中科大镜像
+>   docker pull docker.mirrors.ustc.edu.cn/library/node:12.16.2-alpine3.9
+>   
+>   ```
+>
+> * docker info    --查看docker仓库地址
+>
+> * docker pull registry.docker-cn.com/library/node:latest
+>
+> * sudo add-apt-repository \ "deb [arch=amd64] https://download.docker.com/linux/ubuntu \ $(lsb_release -cs) \stable"
+>
+>
+>
+>
 
 
+
+##  24，定位系统代码解析
+
+>* CompanyService
+>
+>   * tenantCaches(TenantCache)
+>      * TenantCache(_engineMap(Engine))
+>
+>   ```java
+>   public class Engine implements Serializable {
+>   	private static final long serialVersionUID = 1L;
+>   	@Id
+>   	private String id;
+>   	private long initMark;				//客户端数据库标记
+>   	private long lastRecordId;			//客户端数据最后一条记录ID
+>   	private String password;
+>   	private boolean open;				//开启编辑
+>   	private Timestamp lastSchemaTime;	//服务器端配置ID
+>   }	
+>   ```
+>
+>
 
 
 
@@ -486,7 +573,52 @@
 
 
 ​	
-​	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ​	
