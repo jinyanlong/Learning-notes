@@ -7,7 +7,7 @@
 
 ####1，jsp
 ​	<% %>叫做脚本片段，其中写的内容会翻译在Servlet的Service方法中
-​		我们可以在<%%>中定义局部变量或者调用方法，但不能定义方法
+		我们可以在<%%>中定义局部变量或者调用方法，但不能定义方法
 ​	<%!%>称作声明，其中写的内容将来会直接翻译在Servlet类中，
 ​	，所以我们可以在<%!%>中声明方法、属性、全局变量。
 ​	<%=%>称作jsp表达式，
@@ -46,18 +46,19 @@
 
 ####3，tomcat
 ​	bin-脚本目录-启动脚本：startup.bat|停止脚本-shutdown.bat
-​	conf-配置目录-核心文件：server.xml
-​	lib-依赖库
-​	logs-日志文件
-​	temp-临时文件
-​	配置tomcat发布项目路径：open servers，在server location中定义
-​	webapps-默认情况下发布的web项目所存放的目录-它下面的WEB-INF文件夹是受保护的，别人不能访问
-​	work-tomcat处理jsp的工作目录
-​	发布的时候，项目WebContent文件夹下的东西会被复制到tomcat下webapps/web12/
-​	然后把src中的东西复制到WEB-INF中
-​	在web.xml中<context-param>定义的是项目的全局参数，用servletContext获取
-​	<init-param>定义的是项目的参数，在init(config),在init方法中的config参数中获取。
-​	
+	conf-配置目录-核心文件：server.xml
+	lib-依赖库
+	logs-日志文件
+	temp-临时文件
+	配置tomcat发布项目路径：open servers，在server location中定义
+	webapps-默认情况下发布的web项目所存放的目录-它下面的WEB-INF文件夹是受保护的，别人不能访问
+	work-tomcat处理jsp的工作目录
+	发布的时候，项目WebContent文件夹下的东西会被复制到tomcat下webapps/web12/
+	然后把src中的东西复制到WEB-INF中
+	在web.xml中<context-param>定义的是项目的全局参数，用servletContext获取
+	<init-param>定义的是项目的参数，在init(config),在init方法中的config参数中获取。
+
+
 
 ####4,servlet
 ​	Servlet 是运行在 Web 服务器或应用服务器上的程序
@@ -68,19 +69,17 @@
 
 ####5,cookie
 ​	生命周期：服务器new cookie，request.addCookie();
-​	默认是在缓存中，关闭浏览器，则消失
-​	如果在servelet中设置setMaxAge();则持久化，存在硬盘中
-​	
-​	@@-1
+	默认是在缓存中，关闭浏览器，则消失
+	如果在servelet中设置setMaxAge();则持久化，存在硬盘中
+	
+	@@-1
 
 ####6,session
-​	生命周期：结束时间：服务器关闭|默认没有动作30分钟session过期失效
-​	第一次调用cookie中没有jsessionid，服务调用request.getSession()服务器发现
-​	没有这个jsessionid，会创建sesssion，并自动设置jsessionid给cookie。
-​	
-​	sesssion持久化，在cookie中设置jsessionid并设置超时时间
-
-
+	生命周期：结束时间：服务器关闭|默认没有动作30分钟session过期失效
+	第一次调用cookie中没有jsessionid，服务调用request.getSession()服务器发现
+	没有这个jsessionid，会创建sesssion，并自动设置jsessionid给cookie。
+	
+	sesssion持久化，在cookie中设置jsessionid并设置超时时间
 
 ####5，ServletContext
 ​	改web引用被加载的时候调用
@@ -92,15 +91,15 @@
 
 ####7， html
 ​	<a></a>超链接标签
-​	<div class="container-fluid"> class类名
-​	<meta>网页的描述，关键词，的文件的最后修改，作者，和其他元数据。
-​	<div>独占一行
-​	document.getElementById("123")
-​	document象使我们可以从脚本中对 HTML 页面中的所有元素进行访问。
-​	pageContext用来代表整个JSP页面。
-​	span:使用 <span> 元素对文本中的一部分进行着色：档中的行内元素进行组合
-​	
-​	
+	<div class="container-fluid"> class类名
+	<meta>网页的描述，关键词，的文件的最后修改，作者，和其他元数据。
+	<div>独占一行
+	document.getElementById("123")
+	document象使我们可以从脚本中对 HTML 页面中的所有元素进行访问。
+	pageContext用来代表整个JSP页面。
+	span:使用 <span> 元素对文本中的一部分进行着色：档中的行内元素进行组合
+
+
 
 ####8, css
 ​	.class-类选择器
@@ -206,13 +205,15 @@
 
 ####13,struts2
 ​	配置struts2，在web.xml中加入过滤器，创建struts.xml的配置文件，在struts.xml中配置<package name="hello" namespace="/hello" extends="struts-default" >
-​	<action name="HelloAction" class="cn.itheima.a_hello.HelloAction" method="hello" >
-​	<result name="success" type="dispatcher" >/hello.jsp</result>
-​	访问使用/hello/HelloAction.action
-​	主要是配置package，action,result
-
-	修改struts的默认配置：1，新建struts.properties文件(键值对)  2，在struts.xml中定义   3，在web.xml中定义<context-param>
+	<action name="HelloAction" class="cn.itheima.a_hello.HelloAction" method="hello" >
+	<result name="success" type="dispatcher" >/hello.jsp</result>
+	访问使用/hello/HelloAction.action
+	主要是配置package，action,result
 	
+
+
+修改struts的默认配置：1，新建struts.properties文件(键值对)  2，在struts.xml中定义   3，在web.xml中定义<context-param>
+
 	常用配置修改：<constant name="struts.i18n.encoding" value="UTF-8"></constant>//国际化-解决post提交的乱码
 	<constant name="struts.action.extension" value="action,, "></constant>//访问时的必须的后缀
 	<constant name="struts.devMode" value="true"></constant>//热加载，不需要重启配置文件就能生效，输出更多的调试信息
@@ -223,7 +224,6 @@
 	默认class属性：com.opensymphony.xwork2.ActionSupport
 	
 	在Strust2中，有一个内置对象叫ActionContext，通过该对象可以获得之前Servlet中的对象,就是一个Map集合。
-
 
 ####14，java语法
 ​	继承：extends-只能继承一个类
@@ -252,7 +252,7 @@
 
 
 ​	
-​	
+
 ####15，数据结构
 ​	list:有序，
 ​	ArrayList：数组，动态大小
@@ -295,7 +295,40 @@
 ​		select(默认值): 单表查询加载
 ​		join: 使用多表查询加载集合
 ​		subselect:使用子查询加载集合
-
+=======
+	必须要有主键
+	主键：自然主键，代理主键（常用，自动增加的那种）
+	通过getCurrentSession方法获得session对象，事务提交时会自动关闭，不要手动关闭
+	
+	瞬时状态：new完没有save，不在hibrnate缓存区。
+	持久状态 ：久化对象就是已经被保存进数据库的实体对象，并且这个实体对象现在还处于Hibernate的缓存管理之中
+		这是对该实体对象的任何修改，都会在清理缓存时同步到数据库中。
+	脱管状态 (Detached)：当一个持久化对象，脱离开Hibernate的缓存管理后，它就处于游离状态
+	
+	本质上和瞬时对象相同
+	只是比爱瞬时对象多了一个数据库记录标识值 id.
+	
+	瞬时对象转为持久对象：
+		通过 Session 的 save() 和 saveOrUpdate() 方法把一个瞬时对象与数据库相关联，这个瞬时对象就成为持久化对象。
+		使用 fine(),get(),load() 和 iterater() 待方法查询到的数据对象，将成为持久化对象。
+		
+	hibernate的查询方式：
+		session.get(Customer.class, 1l);
+		hql: session.createQuery(hql); 
+			HQL语句中,不可能出现任何数据库相关的信息的
+			sql 面向数据库表查询
+			hql 面向对象查询
+	
+	lazy属性: 决定是否延迟加载
+		true(默认值): 延迟加载,懒加载，用的时候再加载
+		false: 立即加载
+		extra: 极其懒惰	 基本与懒加载差不多，区别：如果在用到size的时候只
+			查询size，不查询数据
+		
+	fetch属性: 决定加载策略.使用什么类型的sql语句加载集合数据
+		select(默认值): 单表查询加载
+		join: 使用多表查询加载集合
+		subselect:使用子查询加载集合
 ####17,mybatis
 
 ####18.jQuery
@@ -333,6 +366,34 @@
 ​		runtime:（mysql驱动包）编译时不需要,测试时需要，运行时需要
 ​		
 ​	tomcat7:run
+=======
+	mvn tomcat:run
+	下载安装软件,添加环境变量
+	mvn clean;清除
+	mvn compile;编译主目录文件，test没有编译
+	mvn test;
+	mvn package;打包
+	mvn install ;把项目发布到本地仓库，默认放到本地仓库中；执行了compile+test+package
+	
+	mvn的生命周期：compile test package install
+	default生命周期：compile test package install
+	
+	mvn site:生成项目站点；项目描述文档
+	
+	创建maven项目
+	 1，跳过骨架选择，不跳过缺文件夹。
+	 2，坐标，group id : 公司或组名称
+			artifact id :项目名称
+			package：jar=java项目 。 war=web项目. pom：父工程。。
+			
+	包的作用范围：
+		compile:(struts2-core)编译时需要，运行时也需要，运行时需要
+		provided：（jsp-api.rar,servlet-api.jar）编译时需要，测试时也需要。运行时不需要（打包时不需要）。不会打包到war包中
+		test:（junit）编译时不需要，测试时需要
+		runtime:（mysql驱动包）编译时不需要,测试时需要，运行时需要
+		
+	tomcat7:run
+
 
 ####20，注解开发
 ​	@Service用在类上，注册为一个bean，bean名称默认为类名称(首字母小写)，
@@ -562,62 +623,30 @@
 >   ```
 >
 >
+=======
+	<context:component-scan base-package="cn.itcast.bean"></context:component-scan>  - 指定扫描cn.itcast.bean报下的所有类中的注解.
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy> - aop切面代理
+		@Pointcut("execution(* cn.itcast.service.*ServiceImpl.*(..))") - 切入点
+		@AfterReturning("execution(* cn.itcast.service.*ServiceImpl.*(..))") - 后置通知
+	<context:property-placeholder location="classpath:db.properties"  /> - 指定spring读取db.properties配置
+	<tx:annotation-driven/> -  开启使用注解管理aop事务 
+		@Transactional(isolation=Isolation.REPEATABLE_READ,propagation=Propagation.REQUIRED,readOnly=false)
+
+####21，springmvc配置文件
+	 <context:component-scan base-package="com.itheima"/> - 扫描文件夹下带注解的bean
+	 <mvc:annotation-driven/> - 注解的方式启用事务
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -- 视图解释器 
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
 
 
+## 23,springboot
 
-
-
-
-
-
-
-
-​	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
+@ImportResource(locations = {"classpath:beans.xml"})
+@Configuration   @Bean
+```
 
 
 
