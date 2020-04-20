@@ -36,13 +36,13 @@
 ​		setenv bootcmd 'nand read.i 0x80000000 280000 500000;nand read.i 0x81600000 780000 120000;bootm 80000000'	
 ​		saveenv
 ​	
-	烧写用户文件系统
-		进入linux后用linux命令行烧录。
-		 mount -t vfat /dev/mmcblk0p1 /mnt
-		 cd /
-		 tar zxvf /mnt/root_am335x.tar.gz
-		 tar zxvf /mnt/home_am335x.tar.gz
-		 umount /mnt
+​	烧写用户文件系统
+​		进入linux后用linux命令行烧录。
+​		 mount -t vfat /dev/mmcblk0p1 /mnt
+​		 cd /
+​		 tar zxvf /mnt/root_am335x.tar.gz
+​		 tar zxvf /mnt/home_am335x.tar.gz
+​		 umount /mnt
 
 
 
@@ -70,11 +70,11 @@
 ​	
 ​	i2cget -y -f 1 0x5d 0x8140 表示用root权限通过i2cget命令获取地址为0x2a的芯片，0x10寄存器上的值。
 ​	
-	ds3231:(id：68)
-		https://shumeipai.nxez.com/2019/05/08/raspberry-pi-configuration-of-ds3231-clock-module-i2c-interface.html
-		设备文件在/sys/class/rtc/rtc0.
-		驱动：/sys/bus/i2c/drivers/rtc-ds3231
-		
+​	ds3231:(id：68)
+​		https://shumeipai.nxez.com/2019/05/08/raspberry-pi-configuration-of-ds3231-clock-module-i2c-interface.html
+​		设备文件在/sys/class/rtc/rtc0.
+​		驱动：/sys/bus/i2c/drivers/rtc-ds3231
+​		
 		hwclock -r   --读取芯片时间
 		date -s "2020-3-2 5:50:30"  -时间保存到系统
 		hwclock -w   --写入时钟芯片
@@ -121,7 +121,7 @@
 ​		conf寄存器的第3位是puden，使能上拉或者下拉，为0是enables，为1是disabled；
 ​		conf寄存器的第2-0位是mmode，引脚的功能模式选择。
 ​		
-	gpio = <&gpio1 29 0>;	/* GPIO1_29 最后一个1表示低电平有效，0表示高电平有效 */
+​	gpio = <&gpio1 29 0>;	/* GPIO1_29 最后一个1表示低电平有效，0表示高电平有效 */
 
 ####4，wifi，bt调试
 ​	./wifi.sh
@@ -229,10 +229,11 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​						   
 ​	修改：drivers/input/touchscreen/ti_am335x_tsc.c文件titsc_irq函数
 ​	
-	使用tslib的库获取数据时一定要把linux-4.14.67/drivers/input/touchscreen/
-	ti_am335x_tsc.c文件中对xy操作的部分注释掉，然后再用这个ti_am335x_tsc.ko文件
-	取获得7个在pointercal文件中的值。
-	
+​	使用tslib的库获取数据时一定要把linux-4.14.67/drivers/input/touchscreen/
+​	ti_am335x_tsc.c文件中对xy操作的部分注释掉，然后再用这个ti_am335x_tsc.ko文件
+​	取获得7个在pointercal文件中的值。
+​	
+
 	rmmod ti_am335x_tsc.ko
 	insmod ti_am335x_tsc.ko
 	
@@ -263,8 +264,6 @@ https://blog.csdn.net/u013162035/article/details/81840893
 		//hexdump序列号          秒             微妙        同步事件      
 		00000c0             0412 0000        1f70 000d     0000          0000       0000 0000
 
-
-​	
 ​	
 ####18,创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
 ​	
@@ -273,7 +272,9 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​	武汉东湖新技术开发区大学园路长城园路8号海容基孵化园B栋5楼503-2室
 ​	戴静思 185 7171 0831
 
-####20,低功耗	
+
+
+## 20,低功耗	
 ​	在内核中,休眠方式有很多种,可以通过下面命令查看
 ​	cat /sys/power/state
 ​		freeze:   冻结I/O设备,将它们置于低功耗状态,使处理器进入空闲状态,唤醒最快,耗电比其它standby, mem, disk方式高
@@ -284,8 +285,16 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​	echo mem > /sys/power/state
 ​	systemctl suspend
 
-####21，linux所有的用户在/etc/passwd 文件中
-####21. adc
+注意：现有的版本已经可以支持了，不需要做改动。只是目前发现如果启动了wifi，可以休眠但无法唤醒。目前考虑的解决方案是：休眠之前先使用rmmod  bcmdhd命令将模块卸载掉，然后再休眠，这时使用按键唤醒就没有问题了。唤醒后，再执行wifi.sh，启用wifi。
+
+
+
+## 21，开机登陆密码
+
+​	linux所有的用户在/etc/passwd 文件中
+
+## 21. am335x -adc
+
 ​	另外电池电压的测量你们可以需要注意下，335X的ADC只能接收1.8V以下的电压，
 ​	超过1.8V会导致AI出问题
 
@@ -347,9 +356,8 @@ https://blog.csdn.net/u013162035/article/details/81840893
 	git设置仓库地址：
 		git remote add  origin ssh://jyl@git.yz-online.com:10082/yuanzhi/linux/vanxoak/filesystem_yz_v1.git
 
-
 ​		
-####23，systemd学习
+## 23，linux服务 systemd学习
 ​	网络文档：http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
 ​	
 ​	$ sudo systemctl enable clamd@scan.service
@@ -408,8 +416,8 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​			CGroup块：应用的所有子进程
 ​			日志块：应用的日志
 ​			
-	/etc/systemd/system/sysinit.target.wants/yz-gpio-init.service ->
-	-> /lib/systemd/system/yz-gpio-init.service
+​	/etc/systemd/system/sysinit.target.wants/yz-gpio-init.service ->
+​	-> /lib/systemd/system/yz-gpio-init.service
 
 ####24，开机启动
 ​	以eth1为例: (udhcp)
@@ -444,11 +452,11 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​		0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 eth0
 ​		192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
 ​	
-	文件：15-eth.network	
-		[Match]
-		Name=eth1
-		KernelCommandLine=!root=/dev/nfs
-	
+​	文件：15-eth.network	
+​		[Match]
+​		Name=eth1
+​		KernelCommandLine=!root=/dev/nfs
+​	
 		[Link]
 		RequiredForOnline=no
 	

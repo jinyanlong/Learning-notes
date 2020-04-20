@@ -1,14 +1,15 @@
-##1，模块化：
+## 1，模块化：
 ​	在文件夹下使用npm init --yes生成package.json文件
 ​	
-##2，初始化项目 npm init ，生成package.json文件
+## 2，初始化项目 npm init ，生成package.json文件
 ​	注意当前路径不能有中文，空格，
 ​	
-##3，npm install  会生成package-lock.json文件,里面有资源文件路径
+
+## 3，npm install  会生成package-lock.json文件,里面有资源文件路径
 ​	如果有package-lock.json,则会下载里面的资源
 ​	npm install --save    会保存到package-lock.json中
 ​	
-##4，silly-datetime的安装
+## 4，silly-datetime的安装
 ​	在所需文件夹下执行：npm install silly-datetime
 
 ##5，安装cnpm | 淘宝镜像-安装快
@@ -55,10 +56,10 @@
 ​		注意：如果不写$set则则么替换为后面的数据，删除了其它字段
 ​	删除数据：db.user.remove({"name":"lisi"},justOne:true)
 ​	
-	创建索引|设置唯一索引：db.user.ensureIndex({"name":1,"age":1},{"unique":true})
-	查看索引：db.user.getIndexes()
-	删除索引：db.user.dropIndex({"name":1})
-	显示查询所需时间：db.tablename.find().explain( "executionStats" )
+​	创建索引|设置唯一索引：db.user.ensureIndex({"name":1,"age":1},{"unique":true})
+​	查看索引：db.user.getIndexes()
+​	删除索引：db.user.dropIndex({"name":1})
+​	显示查询所需时间：db.tablename.find().explain( "executionStats" )
 
 ##12，express-nodejs的web框架
 ##13，配置express的静态web服务
@@ -92,22 +93,22 @@
 ​	
 ​	sudo npm install -g sqlite3 --unsafe-perm
 ​	
-	sudo npm install node-sass --unsafe-perm --save-dev
-	node-pre-gyp：是一个分发nodejs二进制程序包的工具，负责将预编译好的二进制程序直接下载到用户目录。
-	它介于npm与node-gyp之间，只在相应平台二进制包不存在时才调用node-gyp编译。
-	
-		npm config set strict-ssl false		
-		npm install sqlite3 --build-from-source --sqlite=/bin/sqlite3
-		
-	sqlite3使用node-pre-gyp为各个平台下载指定的预编译的二进制文件。如果无法下载到预编译的二进制文件，sqlite3将使用node-gyp和源代码来构建扩展。
-	这个过程出现两个的库——node-pre-gyp和node-gyp。
-	两者区别在于node-gyp是发布扩展的源码，然后安装时候编译；node-pre-gyp是直接发布编译后的二级制形式的扩展。
-	
-	npm config ls
-	
-	npm config set strict-ssl false
+​	sudo npm install node-sass --unsafe-perm --save-dev
+​	node-pre-gyp：是一个分发nodejs二进制程序包的工具，负责将预编译好的二进制程序直接下载到用户目录。
+​	它介于npm与node-gyp之间，只在相应平台二进制包不存在时才调用node-gyp编译。
+​	
+​		npm config set strict-ssl false		
+​		npm install sqlite3 --build-from-source --sqlite=/bin/sqlite3
+​		
+​	sqlite3使用node-pre-gyp为各个平台下载指定的预编译的二进制文件。如果无法下载到预编译的二进制文件，sqlite3将使用node-gyp和源代码来构建扩展。
+​	这个过程出现两个的库——node-pre-gyp和node-gyp。
+​	两者区别在于node-gyp是发布扩展的源码，然后安装时候编译；node-pre-gyp是直接发布编译后的二级制形式的扩展。
+​	
+​	npm config ls
+​	
+​	npm config set strict-ssl false
 
-##21 vsftpd | ftpserver 移植
+## 21 vsftpd | ftpserver 移植
 ​	下载源码包：https://security.appspot.com/downloads/vsftpd-3.0.3.tar.gz
 ​	修改Makefile中的CC=arm-linux-gnueabihf-gcc
 ​	查看依赖库：arm-linux-gnueabihf-readelf ./vsftpd -a | grep "共享库"
@@ -221,12 +222,176 @@
 
 
 
+##  22，vue学习笔记
+
+>
+
+## 1，ui
+	element ui -基于vue的pc框架
+	mint ui  -手机端框架
+
+
+## 2 ，看mint ui源码中example中的例子
+
+## 1，百度网盘账号：
+	5xb2iw5h@touzi580.com   密码：5beqdi0sic
+
+## 2, 安装vue-cli2.脚手架工具。创建项目。
+	npm install -g vue-cli
+	vue init webpack test1
+	cnpm install  --安装依赖
+	npm run dev
+
+
+## 3, 安装vue-cli3.脚手架工具。创建项目。
+	npm install -g @vue/cli   --vue3
+	vue create test1
+	npm run serve
+	npm run build
+	图形化创建：vue ui
+	cnpm :淘宝镜像
+
+
+	绑定数据： {{msg}} 或者 v-text="msg"
+	绑定属性：<img v-bind:src="imgsrc">
+	绑定html: <div v-html="html语句">
+	循环：<li v-for="item in list">
+			{{item}}
+		  </li>
+	绑定class：<div v-bind:class="{'red':flag}">	  --red是样式表，flag是true,flase	  
+	     结果<div class="red">
+	style的绑定：v-bind:style="{'width':boxwidth+'px'}"
+	双向数据绑定: 只能在表单中使用。
+		<input type="text" v-mode='msg'>
+	引用：ref
+		<input type="text" ref="username">
+		获取dom节点：this.$refs.username.value
+		
+	<button v-on:click="run1()">执行方法的第一种写法</button>
+	简写：<button @click="run2()">执行方法的第二种写法</button>
+	
+	自定义属性aid:  <button data-aid='123' @click="eventFn($event)">事件对象</button>  
+	
+	安装vue-resource: npm install vue-resource --save   --写入package.json
 
 
 
+##  23,vue学习笔记
 
+1. ui
 
+​	element ui -基于vue的pc框架
+​	mint ui  -手机端框架
 
+2. 看mint ui源码中example中的例子
+
+3.百度网盘账号：
+​	5xb2iw5h@touzi580.com   密码：5beqdi0sic
+4. 安装vue-cli2.脚手架工具。创建项目。
+     ​	npm install -g vue-cli
+     ​	vue init webpack test1
+     ​	cnpm install  --安装依赖
+     ​	npm run dev
+
+5. 安装vue-cli3.脚手架工具。创建项目。
+    ​	npm install -g @vue/cli   --vue3
+    ​	vue create test1
+    ​	npm run serve
+    ​	npm run build
+    ​	图形化创建：vue ui
+    ​	cnpm :淘宝镜像
+
+  绑定数据： {{msg}} 或者 v-text="msg"
+  绑定属性：<img v-bind:src="imgsrc">
+  绑定html: <div v-html="html语句">
+  循环：<li v-for="item in list">
+  ​		{{item}}
+  ​	  </li>
+  绑定class：<div v-bind:class="{'red':flag}">	  --red是样式表，flag是true,flase	  
+  ​     结果<div class="red">
+  style的绑定：v-bind:style="{'width':boxwidth+'px'}"
+  双向数据绑定: 只能在表单中使用。
+  ​	<input type="text" v-mode='msg'>
+  引用：ref
+  ​	<input type="text" ref="username">
+  ​	获取dom节点：this.$refs.username.value
+  ​	
+   <button v-on:click="run1()"> 执行方法的第一种写法 </button>
+  简写：<button @click="run2()">执行方法的第二种写法</button>
+
+  自定义属性aid:  <button data-aid='123' @click="eventFn($event)">事件对象</button>  
+
+  安装vue-resource: npm install vue-resource --save   --写入package.json
+
+6. el  --vue实例挂在目标
+
+     ```js
+       <script src="../node_modules/vue/dist/vue.js"></script>
+       <script src="../node_modules/axios/dist/axios.js"></script>
+     ```
+
+7. live-server  --微型服务，不能用于部署
+
+     安装：cnpm i live-server -g 
+
+     使用：命令行：live-server --port 9000
+
+8. axios  --http请求库
+
+     * 安装：cnpm install axios  |
+
+     * ```javascript
+       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+       ```
+
+9. ```html
+   export default {
+        name: "draw",
+        data(){      // 定义变量source        
+          return {
+            source:new ol.source.Vector({wrapX: false}),
+          }
+        },
+       props:{ //接收父组件传递过来的参数
+         map:{
+           //type:String
+         },
+       },
+   mounted(){   //页面初始化方法
+       if (map==map){
+       }
+       var vector = new ol.layer.Vector({
+         source: this.source
+       });
+       this.map.addLayer(vector);
+     },
+     watch: {   //监听值变化：map值
+       map:function () {
+         console.log('3333'+this.map);
+         //return this.map
+         console.log('444444'+this.map);
+         var vector = new ol.layer.Vector({
+           source: this.source
+         });
+         this.map.addLayer(vector);
+       }
+     },
+     methods:{   //监听方法  click事件等，执行drawFeatures方法
+          drawFeatures:function(drawType){}
+   }
+   ```
+
+10. created:html加载完成之前，执行。执行顺序：父组件-子组件
+
+     **mounted:**html加载完成后执行。执行顺序：子组件-父组件
+
+     **methods：**事件方法执行
+
+     **watch：**watch是去监听一个值的变化，然后执行相对应的函数。
+
+     **computed：**computed是计算属性，也就是依赖其它的属性计算所得出最后的值
+
+11. 
 
 
 
