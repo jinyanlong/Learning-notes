@@ -9,6 +9,7 @@
 ​	如果有package-lock.json,则会下载里面的资源
 ​	npm install --save    会保存到package-lock.json中
 ​	
+
 ## 4，silly-datetime的安装
 ​	在所需文件夹下执行：npm install silly-datetime
 
@@ -273,10 +274,6 @@
 	自定义属性aid:  <button data-aid='123' @click="eventFn($event)">事件对象</button>  
 	
 	安装vue-resource: npm install vue-resource --save   --写入package.json
-
-
-
-##  23,vue学习笔记
 
 1. ui
 

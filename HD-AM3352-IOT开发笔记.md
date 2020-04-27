@@ -75,9 +75,9 @@
 ​		设备文件在/sys/class/rtc/rtc0.
 ​		驱动：/sys/bus/i2c/drivers/rtc-ds3231
 ​		
-		hwclock -r   --读取芯片时间
-		date -s "2020-3-2 5:50:30"  -时间保存到系统
-		hwclock -w   --写入时钟芯片
+​		hwclock -r   --读取芯片时间
+​		date -s "2020-3-2 5:50:30"  -时间保存到系统
+​		hwclock -w   --写入时钟芯片
 
 
 ​	
@@ -188,8 +188,10 @@
 
 
 
-####10, ec20ppp拨号网址：
+## 10, 4g,ec20ppp拨号网址：
 https://blog.csdn.net/u013162035/article/details/81840893
+
+ec20模块设备地址：/dev/qcqmi0
 
 ####10, 创建sd卡命令：sudo ./build_sdcard.sh --device /dev/sdd
 
@@ -429,11 +431,13 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​		cd /etc/systemd/system/multi-user.target.wants/
 ​		ln -sf /lib/systemd/system/udhcpd.service .
 ​		
-####25，ublox在wxak板子上虚拟出的设备文件为/dev/ttyACM*
+
+## 25，ublox在wxak板子上虚拟出的设备文件为/dev/ttyACM*
 ​	at指令口为ttyACM0.
 ​	首先关回显（ate0）。
 ​	
-####26，指定网卡ping	
+
+## 26，指定网卡ping	
 ​	查看路由表：route|route -n (-n 表示不解析名字,列出速度会比route 快。)
 ​	ping -I eth1 39.156.66.18 （百度ip）
 ​	添加默认网关：route add default gw 192.168.1.1 dev eth1
@@ -457,9 +461,10 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​		Name=eth1
 ​		KernelCommandLine=!root=/dev/nfs
 ​	
-		[Link]
-		RequiredForOnline=no
-	
+​		[Link]
+​		RequiredForOnline=no
+​	
+
 		[Network]
 		DHCP=no
 		Address=192.168.1.225
@@ -485,8 +490,13 @@ https://blog.csdn.net/u013162035/article/details/81840893
 		
 	vue安装过程中可能会碰到：certificate is not yet valid	的错误；
 		解决：只要更新开发板的时间到utc当前时间就可以。
-			date -s "2020-3-2 5:50:30"
+			date -s "2020-4-26 15:24:30"
 			hwclock -w
+	报错：连接淘宝仓库超时报错
+		Get /binary-mirror-config/latest from https://registry.npm.taobao.org error: ConnectionTimeoutError:
+		find / -name urllib.js
+		vi urllib.js
+		TiMEOUT 和 TIMEOUTS 都修改为15s (3个地方)
 ## 26，vue使用
 > ​	npm install -g vue
 > ​	vue init webpack test1
@@ -494,33 +504,35 @@ https://blog.csdn.net/u013162035/article/details/81840893
 > ​	cnpm install
 > ​	npm run dev
 
-
-####27，问题
+## 27，问题
 ​	1，vi: can't read user input
 ​	解决：命令行输入bash
 ​	2，显示屏红色和蓝色颜色相反的
 ​		如果用qt5，需要使用GPU的功能，由于qt的eglfs必须使用32位bpp，因此335x硬件接线必须采用24位接线方式，我们提供的开发板是采用16位接线方式的，所以红色和蓝色是反的
 
-####28，GPMC接口	
+## 28，GPMC接口	
 ​	AM335X_GPMC_BE1n
 ​		AM335x的GPMC模块作为一组并行的外部总线接口，使用的频率还是
 ​			挺高的，在这上面可以挂NAND FLASH，NOR FLASH，FPGA，DM9000等等设备。
 ​	
 ​	
-####28，ko驱动模块更新
+
+## 28，ko驱动模块更新
 ​	把这个拷贝到内核源码根目录下，模块编译好后，执行这个脚本。会生成modules_install目录。
 ​	然后将modules_install/lib/modules目录下的4.14.67-gd315a9bb00进行压缩。最后将压缩后的
 ​	文件，覆盖开发板的/lib/modules同名目录就可以了（只要覆盖就可以了，不要删除原来的目录）
 ​	
-####29，板级gpio引脚说明：
+
+## 29，板级gpio引脚说明：
 ​	KEEP_PWR在uboot里有拉高，ACOK应该没有用
 ​		在./board/ti/am335x/board.c（void set_mux_conf_regs(void){...}）文件中修改；
 ​	
-####29，usb调试：
+
+## 29，usb调试：
 ​	ls  /sys/bus/usb/devices/
 ​	cat  /sys/kernel/debug/usb/devices
 
-####30，wxak的模块启动qt
+## 30，wxak的模块启动qt
 ​	#!/bin/sh
 ​	source ./linux-devkit/environment-setup
 ​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/
@@ -528,10 +540,14 @@ https://blog.csdn.net/u013162035/article/details/81840893
 ​	cd -
 ​	qt web使用的例子为：QuickViewer-wxak
 
-####30，域名解析
+## 31，域名解析
 ​	在/etc/resolv.conf中添加：nameserver 114.114.114.114
 ​	
-​	
+
+
+
+
+
 ​	
 
 3gReset-B44-gpio3_17=gpio113--ox99c
@@ -618,7 +634,6 @@ export LD_LIBRARY_PATH=/home/qtapp/lib_qt:$T_ROOT/lib
 killall $EXEC_NAME
 cd /home/qtapp/testapp
 ./$EXEC_NAME -qws 
-
 
 modinfo pvrsrvctl
 pvrsrvctl --start --no-module
