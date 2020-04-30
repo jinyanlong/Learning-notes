@@ -92,36 +92,50 @@
 ####1，网络
 ​	ip配置文件在/etc/systemd/network/10-eth.network文件中
 ​	netstat -rn 查看网关
-####2，交叉编译器
-​	要采用arm-linux-gnueabihf-gcc的交叉编译器，不然会报错
-​	测试文件的makefile需要修改
 
-####3，gpio调试
-​	在/sys/class/gpio中
-​	设置某个引脚为gpio口：echo 49 > export
-​	删除：echo 116 > unexport	
-​	设置为输入：echo “in” > direction
-​	设置为输出：echo “out” > direction
-​	输出高低电平：echo 1 > value；  echo 0 > value
-​	非中断引脚： echo “none” > edge
-​	上升沿触发：echo “rising” > edge
-​	下降沿触发：echo “falling” > edge
-​	边沿触发：echo “both” > edge
-​	
-​	蜂鸣器: gpio1_17=32+17=49
-​	注意：在export 49以后那个蜂鸣器的demo才可以用
-​	led:gpio3_17=113
-​	
-​	（./busybox devmem 0x44e109a0）读取内存中的值--读取控制寄存器中的值，看gpio口配置的什么模式
-​	在Techical Reference Manual.pdf的第二章Memory Map中有 Control Module 寄存器的地址0x44E1_0000-0x44E1_1FFF
-​	控制寄存器：
-​		conf寄存器的第6位是slewctrl，选择快或慢的slew rate；
-​		conf寄存器的第5位是rxactive，为0是disabled，为1是enabled；
-​		conf寄存器的第4位是putypesel，选择上拉或者下拉，为0是pulldown，为1是pullup；
-​		conf寄存器的第3位是puden，使能上拉或者下拉，为0是enables，为1是disabled；
-​		conf寄存器的第2-0位是mmode，引脚的功能模式选择。
-​		
-​	gpio = <&gpio1 29 0>;	/* GPIO1_29 最后一个1表示低电平有效，0表示高电平有效 */
+## 2，交叉编译器|Makefile
+> ​	要采用arm-linux-gnueabihf-gcc的交叉编译器，不然会报错
+> ​	测试文件的makefile需要修改
+>
+> ​	gcc -I() -l -L
+>
+> * -I 大写i  寻找头文件的路径
+> * -L  目录作为第一个寻找库文件的目录
+> * -l  小写L  指定程序要链接的库
+> * $(wildcard *.c)”来获取工作目录下的所有的.c文件列表
+> * 在$(patsubst %.c,%.o,$(dir) )中，patsubst把$(dir)中的变量符合后缀是.c的全部替换成.o，
+> * .PHONY后面的target表示的也是一个伪造的target, 而不是真实存在的文件target，make clean   --如果有clean文件，如果没有.PHONY:clean  ,则不会执行makefile中的make clean
+> * **-Wall：**选项可以打印出编译时所有的错误或者警告信息
+> * gcc -c main.s -o main.o  gcc main.o -o main
+> * %.o:%.cpp
+>   ​	$(CC) -c $(CFLAGS) $(LDFLAGS) $< -o $@ $(DEFS)
+
+## 3，gpio调试
+> ​	在/sys/class/gpio中
+> ​	设置某个引脚为gpio口：echo 49 > export
+> ​	删除：echo 116 > unexport	
+> ​	设置为输入：echo “in” > direction
+> ​	设置为输出：echo “out” > direction
+> ​	输出高低电平：echo 1 > value；  echo 0 > value
+> ​	非中断引脚： echo “none” > edge
+> ​	上升沿触发：echo “rising” > edge
+> ​	下降沿触发：echo “falling” > edge
+> ​	边沿触发：echo “both” > edge
+> ​	
+> ​	蜂鸣器: gpio1_17=32+17=49
+> ​	注意：在export 49以后那个蜂鸣器的demo才可以用
+> ​	led:gpio3_17=113
+> ​	
+> ​	（./busybox devmem 0x44e109a0）读取内存中的值--读取控制寄存器中的值，看gpio口配置的什么模式
+> ​	在Techical Reference Manual.pdf的第二章Memory Map中有 Control Module 寄存器的地址0x44E1_0000-0x44E1_1FFF
+> ​	控制寄存器：
+> ​		conf寄存器的第6位是slewctrl，选择快或慢的slew rate；
+> ​		conf寄存器的第5位是rxactive，为0是disabled，为1是enabled；
+> ​		conf寄存器的第4位是putypesel，选择上拉或者下拉，为0是pulldown，为1是pullup；
+> ​		conf寄存器的第3位是puden，使能上拉或者下拉，为0是enables，为1是disabled；
+> ​		conf寄存器的第2-0位是mmode，引脚的功能模式选择。
+> ​		
+> ​	gpio = <&gpio1 29 0>;	/* GPIO1_29 最后一个1表示低电平有效，0表示高电平有效 */
 
 ####4，wifi，bt调试
 ​	./wifi.sh
@@ -141,11 +155,11 @@
 ​	sd卡文件系统中，在rootfs-sd.tar.gz下的/etc/sfdisk_emmc.sh脚本是用于给emmc做分区的脚本，/etc/emmc_program.sh是执行emmc烧写的脚本
 ​	启动的服务在/lib/systemd/system/emmc_program.service中；
 ​	制作sd卡：sudo ./build_sdcard.sh --device /dev/sdb
-​	
-####7，uboot中显示图片
+
+## 7，uboot中显示图片
 ​	uboot中显示图片将MLO和u-boot.img更新后，uboot下需要显示的logo也需要拷贝到/run/media/mmcblk1p1/目录下，并重命名为splash.bmp
 ​	需要24位，800x480
-####8,对于许多TI的芯片来说，引脚复用的配置是在Control Module(配置模块)的寄存器里配置的(第九章)，
+#### 8,对于许多TI的芯片来说，引脚复用的配置是在Control Module(配置模块)的寄存器里配置的(第九章)，
 ​	（这个和三星的CPU有点不同，三星的一般在GPIO的寄存器中配置）
 
 ## 9，服务|开机启动|自启动脚本制作
@@ -188,19 +202,13 @@
 
 
 
-## 10, 4g,ec20ppp拨号网址：
-https://blog.csdn.net/u013162035/article/details/81840893
 
-ec20模块设备地址：/dev/qcqmi0
 
-####10, 创建sd卡命令：sudo ./build_sdcard.sh --device /dev/sdd
+## 10, 创建sd卡命令：sudo ./build_sdcard.sh --device /dev/sdd
 
-####11, 开启usb网络(otg)用 modprobe g_ether
-​	添加pid，vid的文件：drivers/usb/serial/option.c
-​	设置电脑ip地址；
-​	设置开发板地址：ifconfig usb0 192.168.0.1
 
-####12，启动顺序与引脚的关系
+
+## 12，启动顺序与引脚的关系
 ​	检查下LCD_DATA4-0，对于EMMC版本，正确的启动值为11100，
 ​	也就是LCD_DATA4、3、2=1，LCD_DATA0、1=0
 ​	
@@ -421,7 +429,7 @@ ec20模块设备地址：/dev/qcqmi0
 ​	/etc/systemd/system/sysinit.target.wants/yz-gpio-init.service ->
 ​	-> /lib/systemd/system/yz-gpio-init.service
 
-####24，开机启动
+## 24，开机启动
 ​	以eth1为例: (udhcp)
 ​		1、删除/etc/systemd/network/15-eth.network
 ​		2、将udhcpd_eth1.sh拷贝到/home/root目录下，并增加可执行权限；
@@ -479,11 +487,11 @@ ec20模块设备地址：/dev/qcqmi0
 
 ## 26，nodejs移植
 > * 1.下载：node-v10.16.3-linux-armv7l.tar.gz安装包
->   2，解压：tar -xvf node-v10.16.3-linux-armv7l.tar.xz 
->   3，创建链接文件：
+> * 2，解压：tar -xvf node-v10.16.3-linux-armv7l.tar.xz 
+> * 3，创建链接文件：
 >   ​	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/node /usr/sbin/node
 >   ​	    ln -sf /home/root/jyl/nodejs/nodejs-v3/node-v12.13.1-linux-armv7l/bin/npm /usr/bin/npm 
->   ​	
+>
 
 	如果报错：npm ERR! code CERT_NOT_YET_VALID
 		解决：npm config set strict-ssl false
@@ -497,7 +505,53 @@ ec20模块设备地址：/dev/qcqmi0
 		find / -name urllib.js
 		vi urllib.js
 		TiMEOUT 和 TIMEOUTS 都修改为15s (3个地方)
+> * nodejs  c/c++扩展
+>
+>   node-gyp configure build
+>
+> *   nodejs扩展c/c++ 用自带的/bin/node-gpy交叉编译：
+>
+> * 交叉编译
+>   export CC=arm-linux-gnueabihf-gcc
+>   export CXX=arm-linux-gnueabihf-g++
+>   export LD=arm-linux-gnueabihf-ld
+>   export RAINLIB=arm-linux-gnueabihf-rainlib
+>   export AR=arm-linux-gnueabihf-ar
+>   export LINK=arm-linux-gnueabihf-g++
+>   node-gyp configure --arch=arm
+>   node-gyp build
+>
+>   node addon.js
+>
+> * 
+>
+> * 文件binding.gyp{
+>   ​    'targets': [
+>   ​        {
+>   ​            'target_name': 'test',    
+>   ​            'type': 'executable',   
+>   ​            'sources': [             
+>   ​                'main.c',
+>   ​            ],
+>   ​            'include_dirs': [   # 指定libmath.a头文件路径
+>   ​                'math'           
+>   ​            ],
+>   ​            'libraries': [      # 指定链接的头文件路径和名称
+>   ​                'math/libmath.a'
+>   ​            ],
+>   ​            'ldflags': [       # 设置链接参数
+>   ​                '-L./math'          # 指定链接库的路径
+>   ​            ],
+>   ​        },
+>   ​    ],
+>
+
+
+
+
+
 ## 26，vue使用
+
 > ​	npm install -g vue
 > ​	vue init webpack test1
 > ​	cd test1
@@ -529,22 +583,53 @@ ec20模块设备地址：/dev/qcqmi0
 ​	
 
 ## 29，usb调试：
-​	ls  /sys/bus/usb/devices/
-​	cat  /sys/kernel/debug/usb/devices
+> * ls  /sys/bus/usb/devices/
+>
+> * cat  /sys/kernel/debug/usb/devices
+>
+> * 开启usb网络(otg)用 modprobe g_ether
+>
+> * 添加pid，vid的文件：drivers/usb/serial/option.c
+>
+> * 设置开发板地址：ifconfig usb0 192.168.0.1
+>
+> * 引脚说明： usb_id --检测ID脚状态高低，从而判断为主设备或从设备.
+>
+>   ​    usb_vbus  --usb供电
+>
+> *  ec20模块ppp拨号网址：
+>
+>   https://blog.csdn.net/u013162035/article/details/81840893
+>
+> * ec20模块设备地址：/dev/qcqmi0
+>
+>
 
-## 30，wxak的模块启动qt
-​	#!/bin/sh
-​	source ./linux-devkit/environment-setup
-​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/
-​	./qtcreator
-​	cd -
-​	qt web使用的例子为：QuickViewer-wxak
-
-## 31，域名解析
-​	在/etc/resolv.conf中添加：nameserver 114.114.114.114
+​	
 ​	
 
+## 30，wxak的模块启动qt
+> ​	#!/bin/sh
+> ​	source ./linux-devkit/environment-setup
+> ​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/
+> ​	./qtcreator
+> ​	cd -
+> ​	qt web使用的例子为：QuickViewer-wxak
+>
+> * 域名解析:在/etc/resolv.conf中添加：nameserver 114.114.114.114
 
+
+​	
+
+## 32，boost编译使用
+
+>    ./bootstrap.sh
+>
+>    生成 project-config.jam文件。 修改:using gcc : arm : arm-linux-gnueabi-g++ ; 
+>
+>    * 程序编译错误：对‘pthread_key_delete’未定义的引用
+>
+>      ​	加-lpthread,并且要放在最后位置
 
 
 
