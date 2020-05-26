@@ -1,10 +1,11 @@
 ############################万象奥科demo板子开发笔记##################
-####1.虚拟机配置注意点：
+
+## 1.虚拟机配置注意点：
 ​	在进行嵌入式 Linux 开发时，如果需要目标板通过 NFS 文件系统挂载虚拟机的 NFS 共享目录的话，必须将虚拟网卡配置为桥接模式。
 ​		
-####2.网络配置文件在/home/etc/sysconf文件中
+​	网络配置文件在/home/etc/sysconf文件中
 
-####3, 系统更新
+## 3, 系统更新
 ​	MLO/UBOOT更新
 ​	nand erase 0x00 0x280000
 ​	mmc rescan 0;fatload mmc 0 0x81000000 MLO
@@ -46,7 +47,7 @@
 
 
 
-####4，can总线调试
+## 4，can总线调试
 ​	ifconfig can0 down
 ​	ip link set can0 type can bitrate 125000 
 ​	ifconfig can0 up
@@ -59,7 +60,7 @@
 ​	cansend can0 123#DEADBEEF		//123#表示发送的是标准数据帧
 ​	./cansend can0 -e 0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88
 
-####4，iic总线调试
+## 4，iic总线调试
 ​	查看iic总线：ls /dev/i2c*
 ​	
 ​	i2cdetect -l指令可以查看TX1上的I2C总线
@@ -82,14 +83,33 @@
 
 ​	
 
-####5， 命令行
-​    df -m  查看磁盘使用情况
-​    cat /proc/mtd  查看nandflash的分区信息
-​    cat /proc/cpuinfo  查看cpu信息
+## 5， 命令行
+> ​    df -m  查看磁盘使用情况
+> ​    cat /proc/mtd  查看nandflash的分区信息
+> ​    cat /proc/cpuinfo  查看cpu信息
+>
+>    ps -aux|grep  进程状态说明：
+>
+>  D    不可中断    Uninterruptible sleep (usually IO)
+> ​    R    正在运行，或在队列中的进程
+> ​    S    处于休眠状态
+> ​    T    停止或被追踪
+> ​    Z    僵尸进程
+> ​    W    进入内存交换（从内核2.6开始无效）
+> ​    X    死掉的进程
+>
+>     <    高优先级
+>     N    低优先级
+>     L    有些页被锁进内存
+>     s    包含子进程
+>     +    位于后台的进程组
+>     l    多线程，克隆线程
 
-######################万象奥科正式版V1板子开发笔记#######################################################################################
+
+
+######################万象奥科正式版V1板子开发笔记###################################################################
 ##v1版本
-####1，网络
+## 1，网络
 ​	ip配置文件在/etc/systemd/network/10-eth.network文件中
 ​	netstat -rn 查看网关
 
@@ -137,7 +157,7 @@
 > ​		
 > ​	gpio = <&gpio1 29 0>;	/* GPIO1_29 最后一个1表示低电平有效，0表示高电平有效 */
 
-####4，wifi，bt调试
+## 4，wifi，bt调试(ap6212)
 ​	./wifi.sh
 ​	蓝牙使用：
 ​		./bluetooth.sh
@@ -147,11 +167,17 @@
 ​		
 ​	启动模块前要求BT_RST=0，启动模块后，量下WL_REG_ON是否有拉高
 
-####5，v1版本更新：
+* 问题：
+
+  1，启动wifi.sh出错：insmod: ERROR: could not insert module bcmdhd.ko: Invalid module format
+
+  解决：wxak重新编译内核，跟zImage有关系。
+
+## 5，v1版本更新：
 ​	uboot更新在/run/media/mmcblk1p1目录下的MLO|u-boot.img文件
 ​	设备树和linux更新在/boot目录下的am335x-evm.dtb|zImage文件
 
-####6，sd卡升级
+## 6，sd卡升级
 ​	sd卡文件系统中，在rootfs-sd.tar.gz下的/etc/sfdisk_emmc.sh脚本是用于给emmc做分区的脚本，/etc/emmc_program.sh是执行emmc烧写的脚本
 ​	启动的服务在/lib/systemd/system/emmc_program.service中；
 ​	制作sd卡：sudo ./build_sdcard.sh --device /dev/sdb
@@ -159,6 +185,7 @@
 ## 7，uboot中显示图片
 ​	uboot中显示图片将MLO和u-boot.img更新后，uboot下需要显示的logo也需要拷贝到/run/media/mmcblk1p1/目录下，并重命名为splash.bmp
 ​	需要24位，800x480
+
 #### 8,对于许多TI的芯片来说，引脚复用的配置是在Control Module(配置模块)的寄存器里配置的(第九章)，
 ​	（这个和三星的CPU有点不同，三星的一般在GPIO的寄存器中配置）
 
@@ -221,28 +248,39 @@
 ​	
 ####15, 使用ti的sdk版本号05.01.00.11 ，里面使用的qt版本5.9.6
 
-####16， qt环境
-​	#!/bin/sh
-​	source ./linux-devkit/environment-setup			--使能环境
-​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/   --必须在当前命令行执行
-​	./qtcreator
-​	cd -
-​	
-####17,tslib环境配置，触摸屏(TP)调试校准
-​	把这个解压到/home/root目录下
-​	cd /home/root/tslib
-​	source ./tslib_env.sh
-​	./bin/ts_calibrate
-​	
-​	Calibration constants: -1633061 44107 808 33785152 -45999 -18 65536
-​						   44107 808 -1633061 -45999 -18 33785152 65536    800 480
-​						   
-​	修改：drivers/input/touchscreen/ti_am335x_tsc.c文件titsc_irq函数
-​	
-​	使用tslib的库获取数据时一定要把linux-4.14.67/drivers/input/touchscreen/
-​	ti_am335x_tsc.c文件中对xy操作的部分注释掉，然后再用这个ti_am335x_tsc.ko文件
-​	取获得7个在pointercal文件中的值。
-​	
+## 16， qt环境|串口的移植
+> ​	#!/bin/sh
+> ​	source ./linux-devkit/environment-setup			--使能环境
+> ​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/   --必须在当前命令行执行
+> ​	./qtcreator
+> ​	cd -
+> ​	
+>
+> * 官网下载串口组件的源码，势能qt环境，再串口源码src目录下执行qmake  src.pro   生成Makefile文件，然后执行make，在lib目录下生成库文件。make install 会自动将头文件，库文件拷贝到对应 的目录下。
+>
+> * 再pro文件中添加 LIBS += -lQt5SerialPort
+>
+> * 不要手工拷贝（将include下的QtSerialPort文件夹复制到ti-sdk/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi/include/QtSerialPort。PS:这步可以解决无法找到QSerialPort和QSerialPortInfo头文件的问题。
+>
+>   复制lib目录中的库文件，拷贝文件libQtSerialPort.prl， libQtSerialPort.so， libQtSerialPort.so.1， libQtSerialPort.so.1.0，libQtSerialPort.so.1.0.0到ti-sdk/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib下，这是链接库的位置。）
+>
+> * serialport编译报错没办法，修改serialport项目生成的Makefile文件，在LIBS中添加-lQt5SerialPort。编译通过。
+
+## 17,tslib环境配置，触摸屏(TP)调试校准
+> ​	把这个解压到/home/root目录下
+> ​	cd /home/root/tslib
+> ​	source ./tslib_env.sh
+> ​	./bin/ts_calibrate
+> ​	
+> ​	Calibration constants: -1633061 44107 808 33785152 -45999 -18 65536
+> ​						   44107 808 -1633061 -45999 -18 33785152 65536    800 480
+> ​						   
+> ​	修改：drivers/input/touchscreen/ti_am335x_tsc.c文件titsc_irq函数
+> ​	
+> ​	使用tslib的库获取数据时一定要把linux-4.14.67/drivers/input/touchscreen/
+> ​	ti_am335x_tsc.c文件中对xy操作的部分注释掉，然后再用这个ti_am335x_tsc.ko文件
+> ​	取获得7个在pointercal文件中的值。
+> ​	
 
 	rmmod ti_am335x_tsc.ko
 	insmod ti_am335x_tsc.ko
@@ -275,12 +313,14 @@
 		00000c0             0412 0000        1f70 000d     0000          0000       0000 0000
 
 ​	
-####18,创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
 ​	
-####19，万象奥科地址
+
+## 19，万象奥科am335x板级调试
 ​	收件地址：
 ​	武汉东湖新技术开发区大学园路长城园路8号海容基孵化园B栋5楼503-2室
 ​	戴静思 185 7171 0831
+
+> * 创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
 
 
 
@@ -295,7 +335,7 @@
 ​	echo mem > /sys/power/state
 ​	systemctl suspend
 
-注意：现有的版本已经可以支持了，不需要做改动。只是目前发现如果启动了wifi，可以休眠但无法唤醒。目前考虑的解决方案是：休眠之前先使用rmmod  bcmdhd命令将模块卸载掉，然后再休眠，这时使用按键唤醒就没有问题了。唤醒后，再执行wifi.sh，启用wifi。
+注意：ec20,现有的版本已经可以支持了，不需要做改动。只是目前发现如果启动了wifi，可以休眠但无法唤醒。目前考虑的解决方案是：休眠之前先使用rmmod  bcmdhd命令将模块卸载掉，然后再休眠，这时使用按键唤醒就没有问题了。唤醒后，再执行wifi.sh，启用wifi。
 
 
 
@@ -307,6 +347,8 @@
 
 ​	另外电池电压的测量你们可以需要注意下，335X的ADC只能接收1.8V以下的电压，
 ​	超过1.8V会导致AI出问题
+
+​	测电压：cat /sys/bus/iio/devices/iio:device0/in_voltage7_raw
 
 ## 22，移植ftp
 > * 1，编译：arm-linux-readelf –d vsftpd  查看vsftpd文件的依赖库
@@ -630,6 +672,27 @@
 >    * 程序编译错误：对‘pthread_key_delete’未定义的引用
 >
 >      ​	加-lpthread,并且要放在最后位置
+
+## 32，qt模块编译使用
+
+> * 官网下载模块代码
+> * qmake serialport.pro      
+> * make 
+> * make install
+
+## 33，库的位置
+
+> linux 添加动态链接库路径
+>
+> １．修改环境变量
+> `export LD_LIBRARY_PATH=path_name`
+>
+> 2.修改配置文件
+> 修改`/etc/ld.so.conf`的内容在最后添加库加载的新的路径，然后执行：`ldconfig` 使配置生效。
+>
+> 或者在/etc/ld.so.conf.d 下新建一个.conf文件
+
+
 
 
 
