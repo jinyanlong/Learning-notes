@@ -44,7 +44,9 @@
    }
    ```
 
-4. 
+4. QTableWidget(表格)
+
+   > * QTableWidget.clear()    --会把表格头部和内容一起删除掉
 
 ## 3，qt编译错误：
 
