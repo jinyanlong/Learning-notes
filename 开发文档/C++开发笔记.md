@@ -53,7 +53,10 @@
 >      ```
 >
 
+> 2. 定义 Student s和new Student()的却别是前面的在释放时候不调用析构函数，后面的会调用析构函数。
+
 ## 4,boost学习
+
 ​	1，boost例子
 ​		源码中的libs文件夹中有例子。
 ​	1，thread join和detach区别

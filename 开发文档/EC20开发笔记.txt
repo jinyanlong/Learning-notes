@@ -11,7 +11,7 @@ sudo adb push <local path> <module path>
 adb push ~/ql-ol-sdk/ql-ol-extsdk/example/helloWorld/hellolworld /usrdata
 或者用3进入
 
-在fastboot模式下执行fastboot erase sbl-> fastboot reboot进入QLoader模式
+在fastboot模式下执行fastboot erase sbl-> fastboot reboot 进入QLoader模式
 2；
 默认ec20的登录账号和登录名为：
 账号：root
@@ -71,6 +71,12 @@ system mdm9607-perf-sysfs.ubi rootfs
 
 	工具位置：
 	D:\jyl\data\EC20\NET\EC20 R2.0&EC20 R2.1 QuecOpen全资料\6-tool\Quectel_Customer_FW_Download_Tool_V4.30\Release_Multi
+	
+11，查看sdk版本：cat /etc/quectel-project-version
+
+12, ec20有CE FAG和CE FASG版本，烧录的固件是不一样的。
+	CE FASG版本是flash 256M的，而CE FAG是512版本的。
+	D:\jyl\data\EC20\EC20CEFASGR07A03M2G_OCPU_SDK.tar.bz2 是256m版本的固件。
 
 
 

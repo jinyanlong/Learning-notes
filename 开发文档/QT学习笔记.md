@@ -1,7 +1,8 @@
 ## 1，鸽钟代码学习笔记
->  QWidget->SubWindow
-> QMainWindow->BaseWindow->Mainwindow
-> ​	
+>  1. QWidget->SubWindow
+>     QMainWindow->BaseWindow->Mainwindow
+>  2. 问题：
+>     * MainWindow主界面为什么要放个widget	
 
 ## 2, qt
 
@@ -12,47 +13,101 @@
 
    来注册进系统。不然会编译报错。
 
-2.  QString
+2. signal和slots的参数要一样
 
-   ```c++
-   QString().sprintf("v%X.%02Xb-%04X-C",8,1,1);
-	缺点：参数不能用QString.
-   QString("a='%1'").arg("11");
-	缺点：
+3. QObject::deleteLater()并没有将对象立即销毁，而是向主消息循环发送了一个event，下一次主消息循环收到这个event之后才会销毁对象。 这样做的好处是可以在这些延迟删除的时间内完成一些操作，坏处就是内存释放会不及时。
+
+4. connect于连接qt的信号和槽，在qt编程过程中不可或缺。它其实有第五个参数。
+
+   ​	Qt::AutoConnection： 默认值，使用这个值则连接类型会在信号发送时决定。如果接收者和发送者在同一个线程，则自动使用Qt::DirectConnection类型。如果接收者和发送者不在一个线程，则自动使用Qt::QueuedConnection类型。
+
+5. 拷贝构造函数
+
+   ​	Qmyclass这个类是继承了QObject类的，而QObject不允许通过"="操作符进行对象复制。
+
+   ```
+   错误：
+   QZXing decoder;
+   decoder = QZXing(QZXing::DecoderFormat_QR_CODE);
+   正确：
+   QZXing *decoder;
+   decoder = new QZXing(QZXing::DecoderFormat_QR_CODE);
    ```
 
-3. QVariant(各种类型的数据都可以放到里面)
 
-   ```c++
-   MyClass myClass;
-   myClass.id=0;
-   myClass.name=QString("LiMing");
-   QVariant data[3];
-   data[0]=QString("ddd");
-   data[1]=123;
-   data[3]=QVariant::fromValue(myClass);
-   //获取数据
-   QString str=data[0].toString();
-   int val=data[1].toInt();
-   
-   if(data[3].canConvert<MyClass>())
-   {
-       MyClass myClass=data[3].value<MyClass>();
-       int id=myClass.id;
-       QString name=myClass.name;
-       qDebug()<<id<<name;
-   }
-   ```
 
-4. QTableWidget(表格)
+   ​	
 
-   > * QTableWidget.clear()    --会把表格头部和内容一起删除掉
+6. qt类
+
+   > * QVariantMap 相当于 [QMap](https://www.cnblogs.com/xiangtingshen/p/qmap.html)<[QString](https://www.cnblogs.com/xiangtingshen/p/qstring.html), [QVariant](https://www.cnblogs.com/xiangtingshen/p/qvariant.html)>.
+   >
+   > * QString
+   >
+   >   ```
+   >     QString().sprintf("v%X.%02Xb-%04X-C",8,1,1);
+   >   	缺点：参数不能用QString.
+   >      QString("a='%1'").arg("11");
+   >   	缺点：
+   >   ```
+   >
+   > * QVariant(各种类型的数据都可以放到里面)
+   >
+   >   ```
+   >   MyClass myClass;
+   >   myClass.id=0;
+   >   myClass.name=QString("LiMing");
+   >   QVariant data[3];
+   >   data[0]=QString("ddd");
+   >   data[1]=123;
+   >   data[3]=QVariant::fromValue(myClass);
+   >   //获取数据
+   >   QString str=data[0].toString();
+   >   int val=data[1].toInt();
+   >   
+   >   if(data[3].canConvert<MyClass>())
+   >   {
+   >       MyClass myClass=data[3].value<MyClass>();
+   >       int id=myClass.id;
+   >       QString name=myClass.name;
+   >       qDebug()<<id<<name;
+   >   }
+   >   ```
+   >
+   > * QTableWidget(表格)
+   >
+   > ``` 
+   > QTableWidget.clear()    --会把表格头部和内容一起删除掉
+   > ```
+   >
+   >
 
 ## 3，qt编译错误：
 
 1.  对 vtable for class 的未定义引用|对vtable的未定义引用。
 
    解决：删掉生成文件，整个项目重新编译。
+
+2. 运行出错：
+
+   QSqlDatabase: QSQLITE driver not loaded
+   QSqlDatabase: available drivers:
+
+   tmp>>
+   thanks for suggessions...
+   i've add the lines .pro file but getting the same error
+   [@QT](https://forum.qt.io/uid/12949) += core gui sql
+   LIBS += -L"/usr/local/qt/plugins/sqldrivers" -lqsqlite
+   QTPLUGIN += qsqlite@
+
+   my */usr/local/qt/plugins/sqldrivers* directory only contains *libqsqlite.a libqsqlite.prl* files
+   dosen't it require any other files?
+
+3. 运行时报错：**QObject::connect: No such slot QThread::d**
+
+   解决： 在头文件定义中加入Q_OBJECT。
+
+4. 编译错误：error: expected constructor, destructor, or type conversion before ‘class’
 
 
 

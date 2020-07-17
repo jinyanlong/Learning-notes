@@ -177,10 +177,7 @@
 ​	uboot更新在/run/media/mmcblk1p1目录下的MLO|u-boot.img文件
 ​	设备树和linux更新在/boot目录下的am335x-evm.dtb|zImage文件
 
-## 6，sd卡升级
-​	sd卡文件系统中，在rootfs-sd.tar.gz下的/etc/sfdisk_emmc.sh脚本是用于给emmc做分区的脚本，/etc/emmc_program.sh是执行emmc烧写的脚本
-​	启动的服务在/lib/systemd/system/emmc_program.service中；
-​	制作sd卡：sudo ./build_sdcard.sh --device /dev/sdb
+
 
 ## 7，uboot中显示图片
 ​	uboot中显示图片将MLO和u-boot.img更新后，uboot下需要显示的logo也需要拷贝到/run/media/mmcblk1p1/目录下，并重命名为splash.bmp
@@ -229,42 +226,99 @@
 
 
 
-
-
-## 10, 创建sd卡命令：sudo ./build_sdcard.sh --device /dev/sdd
-
-
-
 ## 12，启动顺序与引脚的关系
 ​	检查下LCD_DATA4-0，对于EMMC版本，正确的启动值为11100，
 ​	也就是LCD_DATA4、3、2=1，LCD_DATA0、1=0
 ​	
 ​	
-####13，AM335X_GPMC_A6这个引脚默认拉高，没有配置。
 
-####14. 音频/声音调试
-​	音量： amixer cset numid=14 127
-​	aplay 1.wav
+## 
 ​	
-####15, 使用ti的sdk版本号05.01.00.11 ，里面使用的qt版本5.9.6
 
-## 16， qt环境|串口的移植
-> ​	#!/bin/sh
-> ​	source ./linux-devkit/environment-setup			--使能环境
-> ​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/   --必须在当前命令行执行
-> ​	./qtcreator
-> ​	cd -
-> ​	
+## 16， #qt开发
+> 1. 使用ti的sdk版本号05.01.00.11 ，里面使用的qt版本5.9.6.
+> 2.  ti-sdk环境启动qt脚本 
+
+```shell
+	#!/bin/sh
+	source ./linux-devkit/environment-setup			--使能环境
+	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/   --必须在当前命令行执行
+	./qtcreator
+	cd -	
+```
+
+> 2. eglfs  代表使用opengl画图。
 >
-> * 官网下载串口组件的源码，势能qt环境，再串口源码src目录下执行qmake  src.pro   生成Makefile文件，然后执行make，在lib目录下生成库文件。make install 会自动将头文件，库文件拷贝到对应 的目录下。
+>    是Qt的一个平台插件,使Qt程序可以利用opengl es画图而无需窗口系统. 这种方式是在支持gpu的嵌入式设备主要采用的方式. 一般需要gpu厂商提供egl和gles驱动模块.
 >
-> * 再pro文件中添加 LIBS += -lQt5SerialPort
+> 3. 手动编译QserialPort.so qt串口库
 >
-> * 不要手工拷贝（将include下的QtSerialPort文件夹复制到ti-sdk/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi/include/QtSerialPort。PS:这步可以解决无法找到QSerialPort和QSerialPortInfo头文件的问题。
+>   > * 官网下载模块代码
+>   >
+>   > * qmake serialport.pro      
+>   >
+>   > * make 
+>   >
+>   > * make install
+>   >
+>   > * 域名解析:在/etc/resolv.conf中添加：nameserver 114.114.114.114
+>   >
+>   > * 官网下载串口组件的源码，使能qt环境，再串口源码src目录下执行qmake  src.pro   生成Makefile文件，然后执行make，在lib目录下生成库文件。make install 会自动将头文件，库文件拷贝到对应 的目录下。
+>   >
+>   > * 再pro文件中添加 LIBS += -lQt5SerialPort
+>   >
+>   > * 不要手工拷贝（将include下的QtSerialPort文件夹复制到ti-sdk/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi/include/QtSerialPort。PS:这步可以解决无法找到QSerialPort和QSerialPortInfo头文件的问题。
+>   >
+>   > * 复制lib目录中的库文件，拷贝文件libQtSerialPort.prl， libQtSerialPort.so， libQtSerialPort.so.1， libQtSerialPort.so.1.0，libQtSerialPort.so.1.0.0到ti-sdk/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib下，这是链接库的位置。）
+>   >
+>   > * serialport编译报错没办法，修改serialport项目生成的Makefile文件，在LIBS中添加-lQt5SerialPort。编译通过。
 >
->   复制lib目录中的库文件，拷贝文件libQtSerialPort.prl， libQtSerialPort.so， libQtSerialPort.so.1， libQtSerialPort.so.1.0，libQtSerialPort.so.1.0.0到ti-sdk/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib下，这是链接库的位置。）
 >
-> * serialport编译报错没办法，修改serialport项目生成的Makefile文件，在LIBS中添加-lQt5SerialPort。编译通过。
+>
+>   #### 问题：
+>
+> 1. qsqlite没有驱动
+>
+>    ```shell
+>    QSqlDatabase: QSQLITE driver not loaded
+>    QSqlDatabase: available drivers: 
+>    ```
+>
+>    ​	没有sqlite的驱动。
+>
+>    **解决**：
+>
+>    <https://blog.csdn.net/u011625775/article/details/102653587>
+>
+>    下载sqlite3源码，下载qt源码，交叉编译sqlite3源码。
+>
+>    ```shell
+>     ./configure --host=arm-linux --prefix=/home/fangxin/sqlite-arm
+>    
+>    make & make install
+>    ```
+>
+>    进入sqlite插件驱动文件夹   cd   /home/fangxin/Downloads/qt-everywhere-opensource-src-5.6.2/qtbase/src/plugins/sqldrivers/sqlite
+>
+>    利用sqlite3源码编译出的库交叉编译sqlite插件。得到libqsqlite.so库。
+>
+>    * 没有qtsqldrivers-config.pri文件。拷贝configure.pri为qtsqldrivers-config.pri
+>
+>    * 注释：
+>
+>      #qtConfig(system-sqlite) {
+>      #QMAKE_USE += sqlite
+>      #} else {
+>      #include($$PWD/../../../3rdparty/sqlite.pri)
+>      #}
+>
+>      才可以编译通过。
+>
+>    将libqsqlite.so拷贝到开发板/usr/lib/qt5/plugins/sqldrivers/目录下（**注意一定要在此目录下才有效**）。
+>
+>
+>
+>
 
 ## 17,tslib环境配置，触摸屏(TP)调试校准
 > ​	把这个解压到/home/root目录下
@@ -315,14 +369,60 @@
 ​	
 ​	
 
-## 19，万象奥科am335x板级调试
+## 19，#wxak am335x板级开发说明
 ​	收件地址：
 ​	武汉东湖新技术开发区大学园路长城园路8号海容基孵化园B栋5楼503-2室
 ​	戴静思 185 7171 0831
 
-> * 创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
+1. 引脚说明
+
+   * AM335X_GPMC_A6这个引脚默认拉高，没有配置。
+   * KEEP_PWR在uboot里有拉高，ACOK应该没有用
+     在./board/ti/am335x/board.c（void set_mux_conf_regs(void){...}）文件中修改。
+
+2. 创建升级sd卡
+
+   命令：sudo ./build_sdcard.sh --device /dev/sdd
+
+3. 创建升级sd卡的脚本在WXAK-V1\filesystem_yz_v1\filesystem_yz_v1\create_sdcard目录下。
+
+4. 音频/声音调试
+
+      ​	音量： amixer cset numid=14 127
+      ​	播放：aplay 1.wav
+
+5. ko驱动模块更新
+
+   ​	把这个拷贝到内核源码根目录下，模块编译好后，执行这个脚本。会生成modules_install目录。
+   ​	然后将modules_install/lib/modules目录下的4.14.67-gd315a9bb00进行压缩。最后将压缩后的
+   ​	文件，覆盖开发板的/lib/modules同名目录就可以了（只要覆盖就可以了，不要删除原来的目录）
+
+6. sd卡升级
+
+​	sd卡文件系统中，在rootfs-sd.tar.gz下的/etc/sfdisk_emmc.sh脚本是用于给emmc做分区的脚本，/etc/emmc_program.sh是执行emmc烧写的脚本
+​	启动的服务在/lib/systemd/system/emmc_program.service中；
+​	制作sd卡：sudo ./build_sdcard.sh --device /dev/sdb
 
 
+
+## 20, #移远am3352核心板开发笔记
+
+1. ec20不支持，由于电平不一样。只能用ublox和ec25.
+2. 陈总的升级程序没有ec25的pid和vid。
+
+3. ec25ppp拨号上网
+   * <https://blog.csdn.net/wwt18811707971/article/details/54291747>
+
+   * 编译chat和pppd  <https://www.veryarm.com/115592.html>
+
+     pppd call wcdma
+
+   * 注意系统自带的chat指令是不能使用的。需要用编译出来的chat。
+
+   * 如果是移动卡，要修改wcdma文件中apn为cmnet。
+
+   * 添加路由，先删除原来路由，route del default
+     再将ppp0设置为默认路由，route add default dev ppp0
 
 ## 20,低功耗	
 ​	在内核中,休眠方式有很多种,可以通过下面命令查看
@@ -342,6 +442,12 @@
 ## 21，开机登陆密码
 
 ​	linux所有的用户在/etc/passwd 文件中
+
+​	cat /etc/passwd
+
+​	root:x:0:0:root:/home/root:/bin/sh
+
+​	用户名：密码占位符：UID：GID：用户的注释：用户的家目录 ：用户所使用的默认shell类型
 
 ## 21. am335x -adc
 
@@ -611,17 +717,7 @@
 ​		AM335x的GPMC模块作为一组并行的外部总线接口，使用的频率还是
 ​			挺高的，在这上面可以挂NAND FLASH，NOR FLASH，FPGA，DM9000等等设备。
 ​	
-​	
-
-## 28，ko驱动模块更新
-​	把这个拷贝到内核源码根目录下，模块编译好后，执行这个脚本。会生成modules_install目录。
-​	然后将modules_install/lib/modules目录下的4.14.67-gd315a9bb00进行压缩。最后将压缩后的
-​	文件，覆盖开发板的/lib/modules同名目录就可以了（只要覆盖就可以了，不要删除原来的目录）
-​	
-
-## 29，板级gpio引脚说明：
-​	KEEP_PWR在uboot里有拉高，ACOK应该没有用
-​		在./board/ti/am335x/board.c（void set_mux_conf_regs(void){...}）文件中修改；
+​
 ​	
 
 ## 29，usb调试：
@@ -645,20 +741,6 @@
 >
 > * ec20模块设备地址：/dev/qcqmi0
 >
->
-
-​	
-​	
-
-## 30，wxak的模块启动qt
-> ​	#!/bin/sh
-> ​	source ./linux-devkit/environment-setup
-> ​	cd /home/jyl/soft/Qt5.10.0/Tools/QtCreator/bin/
-> ​	./qtcreator
-> ​	cd -
-> ​	qt web使用的例子为：QuickViewer-wxak
->
-> * 域名解析:在/etc/resolv.conf中添加：nameserver 114.114.114.114
 
 
 ​	
@@ -673,12 +755,7 @@
 >
 >      ​	加-lpthread,并且要放在最后位置
 
-## 32，qt模块编译使用
 
-> * 官网下载模块代码
-> * qmake serialport.pro      
-> * make 
-> * make install
 
 ## 33，库的位置
 
