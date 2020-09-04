@@ -231,7 +231,6 @@
 	element ui -基于vue的pc框架
 	mint ui  -手机端框架
 
-
 ## 2 ，看mint ui源码中example中的例子
 
 ## 1，百度网盘账号：
@@ -243,7 +242,6 @@
 	cnpm install  --安装依赖
 	npm run dev
 
-
 ## 3, 安装vue-cli3.脚手架工具。创建项目。
 	npm install -g @vue/cli   --vue3
 	vue create test1
@@ -251,7 +249,6 @@
 	npm run build
 	图形化创建：vue ui
 	cnpm :淘宝镜像
-
 
 	绑定数据： {{msg}} 或者 v-text="msg"
 	绑定属性：<img v-bind:src="imgsrc">
@@ -275,10 +272,16 @@
 	
 	安装vue-resource: npm install vue-resource --save   --写入package.json
 
+<<<<<<< HEAD:开发文档/NodeJs开发笔记.md
+=======
+
+##  23,vue学习笔记
+
+>>>>>>> 55b39e5... tmp:NodeJs开发笔记.md
 1. ui
 
-​	element ui -基于vue的pc框架
-​	mint ui  -手机端框架
+		element ui -基于vue的pc框架
+		mint ui  -手机端框架
 
 2. 看mint ui源码中example中的例子
 
@@ -380,13 +383,13 @@
 
 10. created:html加载完成之前，执行。执行顺序：父组件-子组件
 
-     **mounted:**html加载完成后执行。执行顺序：子组件-父组件
+    **mounted:**html加载完成后执行。执行顺序：子组件-父组件
 
-     **methods：**事件方法执行
+    **methods：**事件方法执行
 
-     **watch：**watch是去监听一个值的变化，然后执行相对应的函数。
+    **watch：**watch是去监听一个值的变化，然后执行相对应的函数。
 
-     **computed：**computed是计算属性，也就是依赖其它的属性计算所得出最后的值
+    **computed：**computed是计算属性，也就是依赖其它的属性计算所得出最后的值
 
 11. 
 

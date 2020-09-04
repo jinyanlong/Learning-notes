@@ -78,6 +78,16 @@ system mdm9607-perf-sysfs.ubi rootfs
 	CE FASG版本是flash 256M的，而CE FAG是512版本的。
 	D:\jyl\data\EC20\EC20CEFASGR07A03M2G_OCPU_SDK.tar.bz2 是256m版本的固件。
 
+11，版本：
+EC20CEHDLG-128-SNNS(默认版本)
+EC20CEHCLG-128-SNNS(数据版本)
+EC20CEFILG-128-SGNS(GNSS版本)
+EC20CEFASG-256-SGNS(默认版本)
+EC20CEFAG-512-SGNS(全功能版本)
+
+
+
+
 
 
 			
